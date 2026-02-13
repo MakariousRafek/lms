@@ -8,11 +8,41 @@ from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
 from .models import Lesson, Question, StudentProgress, EssayAnswer
 from .forms import LessonForm, AddUserForm
-
+from django import forms # ضروري لفورم التسجيل
 
 # ==========================================
-# 1. نظام الدخول الذكي (بدون باسوورد أول مرة)
+# 1. نظام الدخول والتسجيل الذاتي 🌸
 # ==========================================
+
+# فورم تسجيل الطالبات الجديد
+class StudentSignUpForm(forms.Form):
+    username = forms.CharField(max_length=150, label="اسم الطالبة الثنائي")
+    password = forms.CharField(widget=forms.PasswordInput, label="كلمة المرور")
+    confirm_password = forms.CharField(widget=forms.PasswordInput, label="تأكيد كلمة المرور")
+
+def signup_view(request):
+    error_msg = None
+    if request.method == 'POST':
+        form = StudentSignUpForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            confirm_password = form.cleaned_data['confirm_password']
+
+            # التأكد إن الاسم مش محجوز
+            if User.objects.filter(username=username).exists():
+                error_msg = "الاسم ده متسجل قبل كدة، جربي اسم تاني أو ادخلي لوجن 🎀"
+            elif password != confirm_password:
+                error_msg = "كلمتي المرور غير متطابقتين ❌"
+            else:
+                # إنشاء الحساب الجديد ودخول أوتوماتيكي
+                user = User.objects.create_user(username=username, password=password)
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                return redirect('home_redirect')
+    else:
+        form = StudentSignUpForm()
+    return render(request, 'registration/signup.html', {'form': form, 'error': error_msg})
+
 @csrf_exempt
 def custom_login_view(request):
     error_msg = None
@@ -30,7 +60,7 @@ def custom_login_view(request):
                 login(request, auth_user, backend='django.contrib.auth.backends.ModelBackend')
                 return redirect('home_redirect')
             else:
-                # لو اليوزر لسه معملش باسوورد (أول مرة يدخل)
+                # نظام الدخول الذكي لأول مرة
                 if not user.has_usable_password():
                     user.set_password(pass_word)
                     user.save()
@@ -39,7 +69,7 @@ def custom_login_view(request):
                 else:
                     error_msg = "كلمة المرور غير صحيحة ❌"
         else:
-            error_msg = "الاسم مش موجود، اطلبي من تاسوني تضيفك الأول 🎀"
+            error_msg = "الاسم مش موجود، تقدري تسجلي حساب جديد من تحت 🎀"
 
     return render(request, 'registration/login.html', {'error': error_msg})
 
@@ -52,15 +82,14 @@ def home_redirect(request):
 
 
 # ==========================================
-# 2. لوحة تحكم تاسوني (حل إيرور FieldError)
+# 2. لوحة تحكم تاسوني (حل إيرور total_points)
 # ==========================================
 @staff_member_required
 def custom_admin_dashboard(request):
-    # جلب كل المحاولات لعرض زرار "تصحيح المقالي"
     all_progress = StudentProgress.objects.all().select_related('user', 'lesson').order_by('-id')
     lessons = Lesson.objects.all()
 
-    # حساب النقط باستخدام annotate لتجنب إيرور total_score
+    # حساب النقط بتجنب إيرور total_score
     all_students = User.objects.filter(is_staff=False).annotate(
         total_points=Sum('studentprogress__quiz_score')
     ).order_by('-total_points')
@@ -93,7 +122,6 @@ def lesson_quiz(request, lesson_id):
                 if int(user_ans) == q.correct_option:
                     score += q.points
             elif q.question_type == 'text' and user_ans:
-                # حفظ الإجابة المقالية
                 EssayAnswer.objects.update_or_create(
                     progress=progress,
                     question=q,
@@ -110,7 +138,7 @@ def lesson_quiz(request, lesson_id):
 
 
 # ==========================================
-# 4. تصحيح المقالي (تعديل سحب الدرجة)
+# 4. تصحيح المقالي (بإضافة سطر الدرجات)
 # ==========================================
 @staff_member_required
 def grade_essays(request, progress_id):
@@ -120,7 +148,6 @@ def grade_essays(request, progress_id):
     if request.method == 'POST':
         total_essay_grade = 0
         for essay in essays:
-            # تعديل هنا: سحبنا الدرجة باستخدام ID المقالي نفسه
             grade = request.POST.get(f'grade_{essay.id}')
             if grade:
                 essay.grade = int(grade)
@@ -128,7 +155,6 @@ def grade_essays(request, progress_id):
                 essay.save()
                 total_essay_grade += int(grade)
 
-        # تحديث سكور المحاولة بإضافة درجة المقالي
         progress.quiz_score += total_essay_grade
         progress.is_graded = True
         progress.save()
@@ -145,8 +171,7 @@ def grade_essays(request, progress_id):
 def add_lesson(request):
     QuestionFormSet = inlineformset_factory(
         Lesson, Question,
-        fields=(
-        'question_type', 'question_text', 'option_1', 'option_2', 'option_3', 'option_4', 'correct_option', 'points'),
+        fields=('question_type', 'question_text', 'option_1', 'option_2', 'option_3', 'option_4', 'correct_option', 'points'),
         extra=1, can_delete=True
     )
     if request.method == 'POST':
@@ -168,8 +193,7 @@ def edit_lesson(request, lesson_id):
     lesson = get_object_or_404(Lesson, id=lesson_id)
     QuestionFormSet = inlineformset_factory(
         Lesson, Question,
-        fields=(
-        'question_type', 'question_text', 'option_1', 'option_2', 'option_3', 'option_4', 'correct_option', 'points'),
+        fields=('question_type', 'question_text', 'option_1', 'option_2', 'option_3', 'option_4', 'correct_option', 'points'),
         extra=0, can_delete=True
     )
     if request.method == 'POST':
@@ -196,7 +220,7 @@ def add_custom_user(request):
             username = form.cleaned_data['username']
             role = form.cleaned_data['role']
             user = User.objects.create(username=username)
-            user.set_unusable_password()  # لزوم نظام اللوجن الذكي
+            user.set_unusable_password()
             if role == 'admin':
                 user.is_staff = True
                 user.is_superuser = True

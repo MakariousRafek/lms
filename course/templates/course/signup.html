@@ -1,0 +1,10 @@
+<div class="login-container">
+    <h2>تسجيل طالبة جديدة 🌸</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {% if error %} <p style="color: red;">{{ error }}</p> {% endif %}
+        <button type="submit">إنشاء حساب ودخول</button>
+    </form>
+    <p>عندك حساب فعلاً؟ <a href="{% url 'login' %}">ادخلي من هنا</a></p>
+</div>

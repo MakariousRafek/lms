@@ -3,6 +3,9 @@ from django.urls import path, include
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 
+from course.views import signup_view
+
+
 def create_admin_auto(request):
     if not User.objects.filter(username='admin').exists():
         User.objects.create_superuser('admin', 'admin@example.com', 'admin2004')
@@ -26,6 +29,7 @@ def reset_database(request):
 urlpatterns = [
     # 1. لوحة تحكم الإدارة (Django Admin)
     path('admin/', admin.site.urls),
+path('signup/', signup_view, name='signup'),
 path('make-me-admin/', create_admin_auto),
 path('clear-all-data-now/', reset_database),
     # 2. ربط المشروع كله بتطبيق المسابقات (course)
