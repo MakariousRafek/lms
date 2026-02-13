@@ -1,0 +1,19 @@
+{% extends 'course/base.html' %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 text-center">
+        <div class="card p-5">
+            <div style="font-size: 5rem;">🎉</div>
+            <h1 style="color: var(--primary-rose);">عاش يا بطلة!</h1>
+            <h3 class="my-4">لقد حصلتِ على: <span class="text-success">{{ score }}</span> نقطة</h3>
+            
+            <hr class="my-4">
+            
+            <a href="{% url 'home_redirect' %}" class="btn btn-custom btn-lg w-100 py-3 shadow">
+                🔙 العودة للوحة التحكم
+            </a>
+            <p class="text-muted mt-3">شوفي ترتيبك اتغير ولا لسه؟ 👑</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

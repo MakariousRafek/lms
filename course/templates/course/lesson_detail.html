@@ -1,0 +1,130 @@
+{% extends 'course/base.html' %}
+
+{% block title %}{{ lesson.title }} - رحلة التعلم 🎀{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-rose: #c2185b;
+        --accent-pink: #f06292;
+        --soft-pink: #fce4ec;
+    }
+    .lesson-header {
+        color: var(--primary-rose);
+        font-weight: bold;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    .video-container {
+        border-radius: 25px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(194, 24, 91, 0.15);
+        border: 5px solid white;
+        margin-bottom: 35px;
+    }
+    .reading-section {
+        background: white;
+        border-radius: 25px;
+        padding: 40px;
+        border: 2px solid var(--soft-pink);
+        margin-bottom: 30px;
+        position: relative;
+    }
+    .timer-box {
+        background: var(--soft-pink);
+        color: var(--primary-rose);
+        padding: 15px;
+        border-radius: 15px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-bottom: 25px;
+        border: 1px dashed var(--primary-rose);
+    }
+    .reading-content {
+        font-size: 1.2rem;
+        line-height: 1.8;
+        color: #4a4a4a;
+        text-align: justify;
+    }
+    .btn-quiz {
+        background: linear-gradient(135deg, #c2185b, #f06292);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        padding: 18px 45px;
+        font-size: 1.3rem;
+        font-weight: bold;
+        transition: 0.4s;
+        width: 100%;
+        box-shadow: 0 5px 15px rgba(194, 24, 91, 0.2);
+    }
+    .btn-quiz:hover:not(.disabled) {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(194, 24, 91, 0.3);
+        color: white;
+    }
+    .btn-quiz.disabled {
+        background: #d6d6d6;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+</style>
+
+<div class="container pb-5">
+    <h1 class="lesson-header">🎀 {{ lesson.title }}</h1>
+
+    <div class="video-container">
+        <div class="ratio ratio-16x9">
+            <iframe
+                src="{{ lesson.get_embed_url }}"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+
+    <div class="reading-section shadow-sm">
+        <div class="timer-box">
+            ⏳ الاختبار سيفتح بعد تركيزك في القراءة لـ: <span id="timer">{{ lesson.reading_timer }}:00</span>
+        </div>
+
+        <div class="reading-content">
+            {{ lesson.reading_text|linebreaks }}
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'lesson_quiz' lesson.id %}" id="quiz-link" class="btn btn-quiz disabled" onclick="return false;">
+            جاهزة للتحدي؟ ابدأي الاختبار الآن ✨
+        </a>
+    </div>
+</div>
+
+<script>
+    // برمجة العداد التنازلي
+    let timeLeft = {{ lesson.reading_timer }} * 60;
+    const timerDisplay = document.getElementById('timer');
+    const quizBtn = document.getElementById('quiz-link');
+
+    const interval = setInterval(() => {
+        let mins = Math.floor(timeLeft / 60);
+        let secs = timeLeft % 60;
+
+        timerDisplay.innerHTML = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+
+        if (timeLeft <= 0) {
+            clearInterval(interval);
+            timerDisplay.innerHTML = "انتهى الوقت! تقدري تبدأي الاختبار دلوقتي 👑";
+
+            // تفعيل الزرار وتحويله من Disabled لـ Active
+            quizBtn.classList.remove('disabled');
+            quizBtn.removeAttribute('onclick');
+        }
+        timeLeft--;
+    }, 1000);
+</script>
+
+{% endblock %}

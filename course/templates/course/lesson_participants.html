@@ -1,0 +1,35 @@
+{% extends 'course/base.html' %}
+{% block content %}
+<div class="card p-4">
+    <h3 style="color: var(--primary-rose);">👥 المشاركات في مسابقة: {{ lesson.title }}</h3>
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th>اسم الطالبة</th>
+                <th>درجة MCQ</th>
+                <th>حالة المقالي</th>
+                <th>إجراء</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for progress in participants %}
+            <tr>
+                <td>{{ progress.user.username }}</td>
+                <td>{{ progress.quiz_score }} نقطة</td>
+                <td>
+                    {% if progress.has_ungraded_essays %}
+                        <span class="badge bg-warning text-dark">بانتظار التصحيح ⏳</span>
+                    {% else %}
+                        <span class="badge bg-success">تم التصحيح ✅</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'grade_essays' progress.id %}" class="btn btn-sm btn-custom">تصحيح المقالي ✍️</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'home_redirect' %}" class="btn btn-light mt-3">🔙 عودة للداشبورد</a>
+</div>
+{% endblock %}

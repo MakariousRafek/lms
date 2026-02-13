@@ -1,0 +1,137 @@
+{% extends 'course/base.html' %}
+{% block content %}
+<style>
+    .question-form { border: 2px dashed #f8bbd0; padding: 20px; border-radius: 15px; margin-bottom: 20px; background: #fff; position: relative; }
+    .mcq-fields { transition: all 0.3s ease; }
+    .form-control { border-radius: 10px; border: 1px solid #f8bbd0; margin-bottom: 10px; }
+    .btn-custom { background: linear-gradient(135deg, #c2185b 0%, #f06292 100%); color: white; border-radius: 15px; }
+    .btn-custom:hover { color: white; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(194,24,91,0.3); }
+</style>
+
+<div class="container mt-4 mb-5">
+    <div class="card p-4 shadow-sm" style="border-radius: 20px; border: none;">
+        <h3 class="text-center mb-4" style="color: #c2185b;">🎀 إضافة مسابقة وأسئلة جديدة</h3>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="mb-4 p-3 bg-light" style="border-radius: 15px;">
+                <h5 class="mb-3" style="color: #c2185b;"><i class="fas fa-book-open me-2"></i>1. بيانات الدرس</h5>
+                <div class="row">
+                    {% for field in form %}
+                    <div class="col-md-6">
+                        <label class="fw-bold">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="mb-4">
+                <h5 class="mb-3" style="color: #c2185b;"><i class="fas fa-question-circle me-2"></i>2. أسئلة المسابقة</h5>
+                {{ formset.management_form }}
+
+                <div id="questions-container">
+                    {% for q_form in formset %}
+                    <div class="question-form border-pink">
+                        {{ q_form.id }}
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label class="fw-bold">نوع السؤال:</label>
+                                <div class="type-selector">{{ q_form.question_type }}</div>
+                            </div>
+                            <div class="col-md-9 mb-3">
+                                <label class="fw-bold">نص السؤال:</label>
+                                {{ q_form.question_text }}
+                            </div>
+                        </div>
+
+                        <div class="mcq-fields border-top pt-3">
+                            <p class="text-muted small">⚠️ الاختيارات (اكتبيها فقط لو نوع السؤال اختياري):</p>
+                            <div class="row">
+                                <div class="col-md-3"><label>اختيار 1</label>{{ q_form.option_1 }}</div>
+                                <div class="col-md-3"><label>اختيار 2</label>{{ q_form.option_2 }}</div>
+                                <div class="col-md-3"><label>اختيار 3</label>{{ q_form.option_3 }}</div>
+                                <div class="col-md-3"><label>اختيار 4</label>{{ q_form.option_4 }}</div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <label class="fw-bold text-success">رقم الإجابة الصحيحة (1-4):</label>
+                                    {{ q_form.correct_option }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="fw-bold">نقاط السؤال:</label>
+                                    {{ q_form.points }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button type="button" id="add-more" class="btn btn-outline-secondary btn-sm w-100 mt-2 py-2" style="border-radius: 10px; border-style: dashed;">
+                    ➕ إضافة سؤال آخر
+                </button>
+            </div>
+
+            <div class="d-flex justify-content-between mt-5">
+                <a href="{% url 'dashboard' %}" class="btn btn-light px-4" style="border-radius: 12px;">🔙 عودة</a>
+                <button type="submit" class="btn btn-custom px-5 py-2 shadow">حفظ المسابقة بالأسئلة ✨</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // دالة لتحديث حالة الحقول (إخفاء/إظهار)
+    function toggleFields(selectElement) {
+        let container = selectElement.closest('.question-form');
+        let mcqFields = container.querySelector('.mcq-fields');
+        if (selectElement.value === 'text') {
+            mcqFields.style.display = 'none';
+        } else {
+            mcqFields.style.display = 'block';
+        }
+    }
+
+    // تشغيل الدالة عند تغيير النوع
+    document.addEventListener('change', function(e) {
+        if (e.target && (e.target.name.includes('question_type') || e.target.closest('.type-selector'))) {
+            toggleFields(e.target);
+        }
+    });
+
+    // تشغيل الدالة عند تحميل الصفحة لكل الأسئلة الموجودة
+    document.querySelectorAll('select[name$="question_type"]').forEach(select => {
+        toggleFields(select);
+    });
+
+    // كود إضافة سؤال جديد (Dynamic Formset)
+    document.getElementById('add-more').onclick = function() {
+        let container = document.getElementById('questions-container');
+        let totalForms = document.getElementById('id_questions-TOTAL_FORMS');
+        let formNum = parseInt(totalForms.value);
+
+        // جلب أول فورم لنسخه
+        let forms = container.getElementsByClassName('question-form');
+        let newForm = forms[0].cloneNode(true);
+
+        // تحديث الأسماء والـ IDs
+        newForm.innerHTML = newForm.innerHTML.replace(/questions-0/g, `questions-${formNum}`);
+
+        // تصفير القيم في الفورم الجديد
+        newForm.querySelectorAll('input, textarea, select').forEach(input => {
+            if (input.type !== 'hidden') input.value = '';
+            if (input.type === 'number' && input.name.includes('points')) input.value = '1';
+        });
+
+        totalForms.value = formNum + 1;
+        container.appendChild(newForm);
+
+        // التأكد من حالة الحقول في السؤال الجديد
+        toggleFields(newForm.querySelector('select[name$="question_type"]'));
+    };
+</script>
+{% endblock %}

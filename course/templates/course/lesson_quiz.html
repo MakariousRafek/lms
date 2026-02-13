@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار - {{ lesson.title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-rose: #c2185b; --light-pink: #fce4ec; }
+        body {
+            background: linear-gradient(120deg, #fff0f3 0%, #fce4ec 100%);
+            font-family: 'Cairo', sans-serif;
+            min-height: 100vh;
+            padding-top: 50px;
+        }
+        .question-box {
+            background: white; padding: 30px; border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(194, 24, 91, 0.1);
+            margin-bottom: 25px;
+            border: none;
+            transition: transform 0.3s;
+        }
+        .question-box:hover { transform: translateY(-5px); }
+        .question-header { color: var(--primary-rose); font-weight: bold; margin-bottom: 20px; }
+        .form-check-input:checked { background-color: var(--primary-rose); border-color: var(--primary-rose); }
+        .btn-submit {
+            background: linear-gradient(135deg, #c2185b 0%, #f06292 100%);
+            color: white; border: none; border-radius: 15px;
+            padding: 12px 50px; font-weight: bold; font-size: 1.2rem;
+            transition: 0.3s;
+        }
+        .btn-submit:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(194, 24, 91, 0.3); color: white; }
+        .essay-input { border-radius: 15px; border: 2px solid #f8bbd0; padding: 15px; }
+        .essay-input:focus { border-color: var(--primary-rose); box-shadow: 0 0 0 0.25rem rgba(194, 24, 91, 0.1); }
+    </style>
+</head>
+<body>
+
+<div class="container mb-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold" style="color: var(--primary-rose);">📝 اختبار: {{ lesson.title }}</h2>
+        <p class="text-muted">ركزي يا بطلة.. وبالتوفيق! ✨</p>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {% for q in questions %}
+        <div class="question-box">
+            <h4 class="question-header">س{{ forloop.counter }}: {{ q.question_text }}</h4>
+
+            {% if q.question_type == 'mcq' %}
+                <div class="mt-3">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_opt1" value="1" required>
+                        <label class="form-check-label" for="q{{ q.id }}_opt1">{{ q.option_1 }}</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_opt2" value="2">
+                        <label class="form-check-label" for="q{{ q.id }}_opt2">{{ q.option_2 }}</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_opt3" value="3">
+                        <label class="form-check-label" for="q{{ q.id }}_opt3">{{ q.option_3 }}</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_opt4" value="4">
+                        <label class="form-check-label" for="q{{ q.id }}_opt4">{{ q.option_4 }}</label>
+                    </div>
+                </div>
+            {% else %}
+                <div class="mt-3">
+                    <textarea name="question_{{ q.id }}" class="form-control essay-input" rows="4" placeholder="اكتبي إجابتك هنا بالتفصيل.." required></textarea>
+                    <small class="text-muted mt-2 d-block">💡 الإجابة المقالية يتم تصحيحها يدوياً من قِبل تاسوني.</small>
+                </div>
+            {% endif %}
+
+            <div class="text-end mt-2">
+                <span class="badge bg-light text-dark shadow-sm">{{ q.points }} نقاط</span>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="text-center mt-5">
+            <button type="submit" class="btn btn-submit">تسليم الإجابات النهائية ✨</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

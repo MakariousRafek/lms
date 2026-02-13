@@ -1,0 +1,28 @@
+{% extends 'course/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card p-4 shadow-sm border-0" style="border-radius: 20px;">
+        <h3 class="mb-4" style="color: var(--primary-rose);">تصحيح إجابات: {{ progress.user.username }}</h3>
+        <form method="POST">
+            {% csrf_token %}
+            {% for essay in essays %}
+            <div class="mb-4 p-3 bg-light" style="border-radius: 15px;">
+                <h5>سؤال: {{ essay.question.question_text }}</h5>
+                <div class="p-3 bg-white border rounded mb-3">
+                    <strong>إجابة الطالبة:</strong> <br>
+                    {{ essay.answer_text }}
+                </div>
+                <div class="row align-items-center">
+                   <div class="col-md-4">
+    <label>الدرجة المستحقة:</label>
+    <input type="number" name="grade_{{ essay.id }}" class="form-control" placeholder="اكتبي الدرجة هنا.." required>
+    <small class="text-muted">درجة السؤال الأصلية كانت: {{ essay.question.points }}</small>
+</div>
+                </div>
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary w-100 py-2" style="border-radius: 15px;">حفظ الدرجات النهائية ✨</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'course/base.html' %}
+{% block content %}
+<style>
+    .pink-banner { background: linear-gradient(135deg, #c2185b, #f06292); color: white; border-radius: 25px; padding: 40px; margin-bottom: 30px; }
+    .stat-box { background: white; border-radius: 20px; padding: 25px; text-align: center; border: 2px solid var(--soft-pink); }
+    .stat-box h2 { color: var(--primary-rose); font-weight: bold; }
+    .lesson-card { transition: 0.3s; cursor: pointer; text-decoration: none; display: block; }
+    .lesson-card:hover { transform: translateY(-10px); }
+</style>
+
+<div class="pink-banner d-flex justify-content-between align-items-center">
+    <div>
+        <h1>إزيك يا {{ request.user.username }} 🎀</h1>
+        <p class="fs-5 mb-0">مستعدة تجمعي نقط وتكوني من الأوائل؟ ✨</p>
+    </div>
+    <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button class="btn btn-light" style="border-radius: 12px; color: var(--primary-rose);">تسجيل خروج</button></form>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="stat-box">
+            <h5 class="text-muted">🌷 إجمالي نقاطك</h5>
+            <h2>{{ my_score }} نقطة</h2>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="stat-box">
+            <h5 class="text-muted">👑 ترتيبك الحالي</h5>
+            <h2>المركز {{ my_rank }}</h2>
+        </div>
+    </div>
+</div>
+
+<h3 class="mb-4" style="color: var(--primary-rose);">🎯 المسابقات المتاحة ليكِ</h3>
+<div class="row">
+    {% for lesson in lessons %}
+    <div class="col-md-4 mb-4">
+        <a href="{% url 'lesson_detail' lesson.id %}" class="lesson-card">
+            <div class="card p-0 text-center">
+                <div style="background: var(--soft-pink); padding: 30px; font-size: 3.5rem;">🎁</div>
+                <div class="p-3">
+                    <h4 style="color: var(--primary-rose);">{{ lesson.title }}</h4>
+                    <span class="btn btn-custom btn-sm">ابدأي الآن 🚀</span>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

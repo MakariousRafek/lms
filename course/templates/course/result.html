@@ -1,0 +1,11 @@
+{% extends 'course/base.html' %}
+{% block content %}
+<div class="container text-center mt-5">
+    <div class="card shadow p-5" style="border-radius: 20px;">
+        <h1 style="color: var(--primary-rose);">عاش يا بطلة! 🌸</h1>
+        <p class="lead">درجتك في الامتحان ده هي:</p>
+        <div class="display-1 fw-bold text-success">{{ score }}</div>
+        <a href="{% url 'student_dashboard' %}" class="btn btn-login mt-4">العودة للرئيسية ✨</a>
+    </div>
+</div>
+{% endblock %}

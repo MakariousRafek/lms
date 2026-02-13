@@ -1,0 +1,110 @@
+{% extends 'course/base.html' %}
+
+{% block title %}تسجيل الدخول - منصة المسابقات{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        /* خلفية متدرجة رقيقة تناسب ثيم البنات */
+        background: linear-gradient(120deg, #fff0f3 0%, #fce4ec 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+    }
+    .login-card {
+        border-radius: 30px;
+        border: none;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 15px 35px rgba(194, 24, 91, 0.15);
+        padding: 40px;
+        width: 100%;
+        max-width: 450px;
+        animation: fadeIn 0.8s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .login-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .login-header h2 {
+        color: #c2185b; /* primary-rose */
+        font-weight: bold;
+        margin-top: 15px;
+    }
+    .form-control {
+        border-radius: 15px;
+        padding: 12px 20px;
+        border: 1px solid #f8bbd0;
+        margin-bottom: 5px; /* تقليل الهامش عشان الرسالة */
+    }
+    .form-control:focus {
+        border-color: #c2185b;
+        box-shadow: 0 0 0 0.25rem rgba(194, 24, 91, 0.1);
+    }
+    .btn-login {
+        background: linear-gradient(135deg, #c2185b 0%, #f06292 100%);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        padding: 12px;
+        width: 100%;
+        font-weight: bold;
+        font-size: 1.1rem;
+        transition: 0.3s;
+        margin-top: 10px;
+    }
+    .btn-login:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(194, 24, 91, 0.3);
+        color: white;
+    }
+    .footer-text {
+        text-align: center;
+        margin-top: 25px;
+        color: #880e4f;
+        font-size: 0.9rem;
+        padding: 10px;
+        background: #fce4ec;
+        border-radius: 10px;
+    }
+</style>
+
+<div class="login-card">
+    <div class="login-header">
+        <div style="font-size: 4rem;">🌸</div>
+        <h2>إعدادي بنات</h2>
+        <p class="text-muted">أهلاً بيكي في منصة كنيسة الأنبا أنطونيوس ✨</p>
+    </div>
+
+    <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %} {% if error %}
+        <div class="alert alert-danger text-center shadow-sm mb-4"
+             style="border-radius: 15px; border: none; background-color: #ffebee; color: #c62828; font-size: 0.9rem;">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <div class="mb-3">
+            <label class="form-label ms-2 fw-bold" style="color: #c2185b;">اسم المستخدم</label>
+            <input type="text" name="username" class="form-control" placeholder="اكتبي اسمك هنا.." required>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label ms-2 fw-bold" style="color: #c2185b;">كلمة المرور</label>
+            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn btn-login shadow">دخول للمنصة ✨</button>
+    </form>
+
+    <div class="footer-text">
+        🎀 <b>ملحوظة:</b> لو دي أول مرة ليكي، اكتبي اسمك وأي باسوورد تحبيه وهيتحفظ ليكي أوتوماتيك.
+    </div>
+</div>
+{% endblock %}
