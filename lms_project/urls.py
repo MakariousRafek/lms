@@ -1,39 +1,45 @@
 from django.contrib import admin
-from django.urls import path, include
-from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.urls import path, include  # ضروري تضيف include هنا
+from course.views import (
+    custom_login_view,
+    signup_view,
+    home_redirect,
+    custom_admin_dashboard,
+    student_dashboard,
+    lesson_detail,
+    lesson_quiz,
+    grade_essays,
+    add_lesson,
+    edit_lesson,
+    add_custom_user,
+    delete_user
+)
+from django.contrib.auth.views import LogoutView # استيراد دالة الخروج الافتراضية
 
-from course.views import signup_view
-
-
-def create_admin_auto(request):
-    if not User.objects.filter(username='admin').exists():
-        User.objects.create_superuser('admin', 'admin@example.com', 'admin2004')
-        return HttpResponse("مبروك يا بطل! حساب الأدمن اتعمل: admin والباسورد admin2004")
-    return HttpResponse("الأدمن موجود فعلاً يا هندسة!")
-
-
-from django.contrib.auth.models import User
-from course.models import StudentProgress, Lesson, Question, EssayAnswer
-
-
-def reset_database(request):
-    # مسح كل البيانات ما عدا الأدمن اللي إنت لسه عامله
-    StudentProgress.objects.all().delete()
-    EssayAnswer.objects.all().delete()
-    Lesson.objects.all().delete()
-    Question.objects.all().delete()
-    User.objects.filter(is_superuser=False).delete()
-
-    return HttpResponse("تم تصفير الداتابيز بنجاح! الموقع الآن جاهز لاستقبال البنات.")
 urlpatterns = [
-    # 1. لوحة تحكم الإدارة (Django Admin)
     path('admin/', admin.site.urls),
-path('signup/', signup_view, name='signup'),
-path('make-me-admin/', create_admin_auto),
-path('clear-all-data-now/', reset_database),
-    # 2. ربط المشروع كله بتطبيق المسابقات (course)
-    # السطر ده هيخلي ديجانجو يروح يدور في course/urls.py
-    # وهناك هيلاقي دالة اللوجن الذكية بتاعتك وكل الدوال التانية
-    path('', include('course.urls')),
+
+    # السطر ده هو اللي هيخلي اللغة تتغير فعلياً
+    path('i18n/', include('django.conf.urls.i18n')),
+
+    # روابط الدخول والتسجيل
+    path('login/', custom_login_view, name='login'),
+    path('signup/', signup_view, name='signup'),
+    path('home-redirect/', home_redirect, name='home_redirect'),
+
+    # لوحة التحكم
+    path('dashboard/', custom_admin_dashboard, name='dashboard'),
+    path('student/', student_dashboard, name='student_dashboard'),
+
+    # روابط الدروس والاختبارات
+    path('lesson/<int:lesson_id>/', lesson_detail, name='lesson_detail'),
+    path('lesson/<int:lesson_id>/quiz/', lesson_quiz, name='lesson_quiz'),
+
+    # إدارة المحتوى
+    path('dashboard/add-lesson/', add_lesson, name='add_lesson'),
+    path('dashboard/edit-lesson/<int:lesson_id>/', edit_lesson, name='edit_lesson'),
+    path('dashboard/add-user/', add_custom_user, name='add_custom_user'),
+    path('dashboard/delete-user/<int:user_id>/', delete_user, name='delete_user'),
+    path('grade-essays/<int:progress_id>/', grade_essays, name='grade_essays'),
+path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
 ]

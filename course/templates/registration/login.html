@@ -1,6 +1,6 @@
 {% extends 'course/base.html' %}
 
-{% block title %}تسجيل الدخول - منصة المسابقات{% endblock %}
+{% block title %}تسجيل الدخول - إعدادي بنات{% endblock %}
 
 {% block content %}
 <style>
@@ -41,7 +41,8 @@
         border-radius: 15px;
         padding: 12px 20px;
         border: 1px solid #f8bbd0;
-        margin-bottom: 5px; /* تقليل الهامش عشان الرسالة */
+        margin-bottom: 5px;
+        text-align: right; /* لضبط الكتابة بالعربي */
     }
     .form-control:focus {
         border-color: #c2185b;
@@ -72,6 +73,29 @@
         padding: 10px;
         background: #fce4ec;
         border-radius: 10px;
+        line-height: 1.6;
+    }
+    /* تنسيق زرار التسجيل الجديد */
+    .signup-wrapper {
+        text-align: center;
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid #f8bbd0;
+    }
+    .btn-signup-outline {
+        color: #c2185b;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 0.9rem;
+        border: 2px solid #c2185b;
+        padding: 8px 20px;
+        border-radius: 20px;
+        display: inline-block;
+        transition: 0.3s;
+    }
+    .btn-signup-outline:hover {
+        background-color: #c2185b;
+        color: white;
     }
 </style>
 
@@ -83,20 +107,21 @@
     </div>
 
     <form method="POST" action="{% url 'login' %}">
-        {% csrf_token %} {% if error %}
+        {% csrf_token %}
+
+        {% if error %}
         <div class="alert alert-danger text-center shadow-sm mb-4"
-             style="border-radius: 15px; border: none; background-color: #ffebee; color: #c62828; font-size: 0.9rem;">
-            {{ error }}
-        </div>
+             style="border-radius: 15px; border: none; background-color: #ffebee; color: #c62828; font-size: 0.9rem; padding: 10px;">
+            {{ error }} </div>
         {% endif %}
 
         <div class="mb-3">
-            <label class="form-label ms-2 fw-bold" style="color: #c2185b;">اسم المستخدم</label>
+            <label class="form-label ms-2 fw-bold" style="color: #c2185b; display: block; text-align: right;">اسم المستخدم</label>
             <input type="text" name="username" class="form-control" placeholder="اكتبي اسمك هنا.." required>
         </div>
 
         <div class="mb-4">
-            <label class="form-label ms-2 fw-bold" style="color: #c2185b;">كلمة المرور</label>
+            <label class="form-label ms-2 fw-bold" style="color: #c2185b; display: block; text-align: right;">كلمة المرور</label>
             <input type="password" name="password" class="form-control" placeholder="••••••••" required>
         </div>
 
@@ -104,7 +129,9 @@
     </form>
 
     <div class="footer-text">
-        🎀 <b>ملحوظة:</b> لو دي أول مرة ليكي، اكتبي اسمك وأي باسوورد تحبيه وهيتحفظ ليكي أوتوماتيك.
-    </div>
+ <p style="font-size: 0.85rem; color: #666; margin-bottom: 10px;">أو لو حابة تعملي حساب بنفسك:</p>
+        <a href="{% url 'signup' %}" class="btn-signup-outline">إنشاء حساب  جديد 🎀</a>    </div>
+
+
 </div>
 {% endblock %}

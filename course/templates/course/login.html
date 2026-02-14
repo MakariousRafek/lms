@@ -1,110 +1,167 @@
-{% extends 'course/base.html' %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إعدادي بنات </title>
+    <style>
+        body {
+            background-color: #fce4ec;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
 
-{% block title %}تسجيل الدخول - منصة المسابقات{% endblock %}
+        .login-box {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            width: 380px;
+            text-align: center;
+        }
 
-{% block content %}
-<style>
-    body {
-        /* خلفية متدرجة رقيقة تناسب ثيم البنات */
-        background: linear-gradient(120deg, #fff0f3 0%, #fce4ec 100%);
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0;
-    }
-    .login-card {
-        border-radius: 30px;
-        border: none;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        box-shadow: 0 15px 35px rgba(194, 24, 91, 0.15);
-        padding: 40px;
-        width: 100%;
-        max-width: 450px;
-        animation: fadeIn 0.8s ease-in-out;
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .login-header {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-    .login-header h2 {
-        color: #c2185b; /* primary-rose */
-        font-weight: bold;
-        margin-top: 15px;
-    }
-    .form-control {
-        border-radius: 15px;
-        padding: 12px 20px;
-        border: 1px solid #f8bbd0;
-        margin-bottom: 5px; /* تقليل الهامش عشان الرسالة */
-    }
-    .form-control:focus {
-        border-color: #c2185b;
-        box-shadow: 0 0 0 0.25rem rgba(194, 24, 91, 0.1);
-    }
-    .btn-login {
-        background: linear-gradient(135deg, #c2185b 0%, #f06292 100%);
-        color: white;
-        border: none;
-        border-radius: 15px;
-        padding: 12px;
-        width: 100%;
-        font-weight: bold;
-        font-size: 1.1rem;
-        transition: 0.3s;
-        margin-top: 10px;
-    }
-    .btn-login:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(194, 24, 91, 0.3);
-        color: white;
-    }
-    .footer-text {
-        text-align: center;
-        margin-top: 25px;
-        color: #880e4f;
-        font-size: 0.9rem;
-        padding: 10px;
-        background: #fce4ec;
-        border-radius: 10px;
-    }
-</style>
+        /* الوردة اللي في الصورة */
+        .flower-icon {
+            font-size: 50px;
+            color: #d63384;
+            margin-bottom: 10px;
+        }
 
-<div class="login-card">
-    <div class="login-header">
-        <div style="font-size: 4rem;">🌸</div>
+        h2 {
+            color: #b01e56;
+            margin: 5px 0;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        /* تنسيق الرسائل الوردية */
+        .pink-note {
+            background-color: #fdf2f5;
+            color: #d63384;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .input-label {
+            display: block;
+            text-align: right;
+            font-weight: bold;
+            color: #b01e56;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 92%;
+            padding: 12px;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            background-color: #fafafa;
+            outline: none;
+            font-size: 15px;
+            transition: 0.3s;
+            text-align: right;
+        }
+
+        input:focus {
+            border-color: #f8bbd0;
+            background-color: #fff;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background-color: #d63384;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 17px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(214, 51, 132, 0.3);
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            background-color: #c2185b;
+        }
+
+        /* زرار الساين أب الجديد */
+        .signup-container {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #fdf2f5;
+        }
+
+        .btn-signup {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            color: #d63384;
+            text-decoration: none;
+            border: 2px solid #d63384;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .btn-signup:hover {
+            background-color: #fdf2f5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-box">
+        <div class="flower-icon">🌸</div>
         <h2>إعدادي بنات</h2>
-        <p class="text-muted">أهلاً بيكي في منصة كنيسة الأنبا أنطونيوس ✨</p>
+        <p class="subtitle">أهلاً بيكي في منصة كنيسة الأنبا أنطونيوس ✨</p>
+
+        <div class="pink-note">
+            {% if error %}
+                {{ error }}
+            {% else %}
+                🎀 ملحوظة: لو دي أول مرة ليكي، اكتبي اسمك وأي باسوورد تحبيه وهيتخفظ ليكي أوتوماتيك.
+            {% endif %}
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-group">
+                <label class="input-label">اسم المستخدم</label>
+                <input type="text" name="username" placeholder="اكتبي اسمك هنا.." required>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">كلمة المرور</label>
+                <input type="password" name="password" placeholder="********" required>
+            </div>
+
+            <button type="submit" class="btn-login">دخول للمنصة ✨</button>
+        </form>
+
+        <div class="signup-container">
+            <p style="font-size: 13px; color: #888;">أو سجلي كطالبة جديدة بشكل رسمي من هنا:</p>
+            <a href="{% url 'signup' %}" class="btn-signup">إنشاء حساب جديد 🎀</a>
+        </div>
     </div>
 
-    <form method="POST" action="{% url 'login' %}">
-        {% csrf_token %} {% if error %}
-        <div class="alert alert-danger text-center shadow-sm mb-4"
-             style="border-radius: 15px; border: none; background-color: #ffebee; color: #c62828; font-size: 0.9rem;">
-            {{ error }}
-        </div>
-        {% endif %}
-
-        <div class="mb-3">
-            <label class="form-label ms-2 fw-bold" style="color: #c2185b;">اسم المستخدم</label>
-            <input type="text" name="username" class="form-control" placeholder="اكتبي اسمك هنا.." required>
-        </div>
-
-        <div class="mb-4">
-            <label class="form-label ms-2 fw-bold" style="color: #c2185b;">كلمة المرور</label>
-            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
-        </div>
-
-        <button type="submit" class="btn btn-login shadow">دخول للمنصة ✨</button>
-    </form>
-
-    <div class="footer-text">
-        🎀 <b>ملحوظة:</b> لو دي أول مرة ليكي، اكتبي اسمك وأي باسوورد تحبيه وهيتحفظ ليكي أوتوماتيك.
-    </div>
-</div>
-{% endblock %}
+</body>
+</html>

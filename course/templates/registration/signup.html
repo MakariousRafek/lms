@@ -1,0 +1,87 @@
+{% extends 'course/base.html' %}
+
+{% block title %}إنشاء حساب جديد - إعدادي بنات{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        /* خلفية متدرجة رقيقة تناسب ثيم البنات */
+        background: linear-gradient(120deg, #fff0f3 0%, #fce4ec 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+    }
+    .signup-card {
+        border-radius: 30px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 15px 35px rgba(194, 24, 91, 0.15);
+        padding: 40px;
+        width: 100%;
+        max-width: 450px;
+    }
+    .header-text { text-align: center; margin-bottom: 25px; }
+    .header-text h2 { color: #c2185b; font-weight: bold; }
+    .form-control {
+        border-radius: 15px;
+        padding: 12px;
+        border: 1px solid #f8bbd0;
+        text-align: right; /* الاتجاه عربي دائماً */
+        margin-bottom: 15px;
+    }
+    .btn-signup {
+        background: linear-gradient(135deg, #c2185b 0%, #f06292 100%);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        padding: 12px;
+        width: 100%;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .btn-signup:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(194,24,91,0.3);
+    }
+</style>
+
+<div class="signup-card">
+    <div class="header-text">
+        <div style="font-size: 3rem;">🎀</div>
+        <h2>تسجيل بنت جديدة</h2>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        {% if error %}
+        <div class="alert alert-danger text-center" style="border-radius: 15px; background-color: #ffebee; color: #c62828;">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <div class="mb-3">
+            <label class="form-label d-block text-end fw-bold" style="color: #c2185b;">اسمك الثنائي</label>
+            <input type="text" name="username" class="form-control" placeholder="اكتبي اسمك هنا.." required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label d-block text-end fw-bold" style="color: #c2185b;">كلمة المرور</label>
+            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label d-block text-end fw-bold" style="color: #c2185b;">تأكيد كلمة المرور</label>
+            <input type="password" name="confirm_password" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn-signup">إنشاء الحساب 🚀</button>
+    </form>
+
+    <div class="text-center mt-3">
+        <p style="font-size: 0.9rem;">عندك حساب فعلاً؟ <a href="{% url 'login' %}" style="color: #c2185b; font-weight: bold; text-decoration: none;">ادخلي من هنا</a></p>
+    </div>
+</div>
+{% endblock %}

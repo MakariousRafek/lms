@@ -1,9 +1,12 @@
 {% extends 'course/base.html' %}
+
+{% block title %}لوحة التحكم - إدارة المسابقات{% endblock %}
+
 {% block content %}
 <style>
     :root { --primary-rose: #c2185b; --accent-pink: #fce4ec; }
     .card-custom { border-radius: 20px; border: none; box-shadow: 0 10px 25px rgba(194, 24, 91, 0.08); }
-    .btn-custom { background: linear-gradient(135deg, #c2185b 0%, #f06292 100%); color: white; border-radius: 12px; transition: 0.3s; }
+    .btn-custom { background: linear-gradient(135deg, #c2185b 0%, #f06292 100%); color: white; border-radius: 12px; transition: 0.3s; padding: 10px 20px; text-decoration: none; display: inline-block; }
     .btn-custom:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(194, 24, 91, 0.3); color: white; }
     .badge-pink { background-color: var(--accent-pink); color: var(--primary-rose); border-radius: 8px; padding: 5px 10px; font-weight: bold; }
     .table-container { background: white; border-radius: 20px; padding: 20px; }
@@ -18,9 +21,10 @@
         <div class="col-md-5 text-end">
             <a href="{% url 'add_custom_user' %}" class="btn btn-outline-primary ms-2 shadow-sm" style="border-radius: 12px;">👩‍💻 يوزر جديد</a>
             <a href="{% url 'add_lesson' %}" class="btn btn-custom ms-2 shadow-sm">🎀 مسابقة جديدة</a>
+
             <form action="{% url 'logout' %}" method="post" class="d-inline">
                 {% csrf_token %}
-                <button class="btn btn-danger btn-sm shadow-sm" style="border-radius: 10px;">خروج</button>
+                <button type="submit" class="btn btn-danger shadow-sm" style="border-radius: 12px; padding: 10px 20px;">خروج</button>
             </form>
         </div>
     </div>
@@ -116,7 +120,7 @@
                     <tr>
                         <th>الاسم</th>
                         <th>إجمالي النقاط</th>
-                        <th class="text-center">حذف الحساب</th>
+                        <th class="text-center">إجراء</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -125,9 +129,9 @@
                         <td>{{ s.username }}</td>
                         <td><span class="badge-pink">{{ s.total_points|default:0 }} نقطة</span></td>
                         <td class="text-center">
-                            <form action="{% url 'delete_user' s.id %}" method="post" onsubmit="return confirm('متأكدة يا تاسوني إنك عايزة تمسحي حساب البنت دي؟ 🥺')">
+                            <form action="{% url 'delete_user' s.id %}" method="post" onsubmit="return confirm('متأكدة يا تاسوني إنك عايزة تمسحي حساب البنت دي؟ 🥺')" class="d-inline">
                                 {% csrf_token %}
-                                <button class="btn btn-sm text-danger" style="text-decoration: none;">🗑️ حذف</button>
+                                <button type="submit" class="btn btn-sm text-danger" style="border: none; background: none;">🗑️ حذف</button>
                             </form>
                         </td>
                     </tr>
