@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include  # ضروري تضيف include هنا
+from django.views.generic import RedirectView # استيراد للتحويل التلقائي
 from course.views import (
     custom_login_view,
     signup_view,
@@ -17,6 +18,7 @@ from course.views import (
 from django.contrib.auth.views import LogoutView # استيراد دالة الخروج الافتراضية
 
 urlpatterns = [
+path('', RedirectView.as_view(url='login/'), name='go-to-login'),
     path('admin/', admin.site.urls),
 
     # السطر ده هو اللي هيخلي اللغة تتغير فعلياً
