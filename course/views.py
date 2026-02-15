@@ -19,26 +19,32 @@ class StudentSignUpForm(forms.Form):
     username = forms.CharField(max_length=150, label="اسم الطالبة الثنائي")
     password = forms.CharField(widget=forms.PasswordInput, label="كلمة المرور")
     confirm_password = forms.CharField(widget=forms.PasswordInput, label="تأكيد كلمة المرور")
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from django.contrib import messages
 
 def signup_view(request):
-    error_msg = None
     if request.method == 'POST':
-        form = StudentSignUpForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            confirm_password = form.cleaned_data['confirm_password']
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
 
-            # التأكد إن الاسم مش محجوز
-            if User.objects.filter(username=username).exists():
-                error_msg = "الاسم ده متسجل قبل كدة، جربي اسم تاني أو ادخلي لوجن 🎀"
-            elif password != confirm_password:
-                error_msg = "كلمتي المرور غير متطابقتين ❌"
-            else:
-                # إنشاء الحساب الجديد ودخول أوتوماتيكي
-                user = User.objects.create_user(username=username, password=password)
-                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                return redirect('home_redirect')
+        # 1. التأكد من تطابق كلمة المرور
+        if password != confirm_password:
+            return render(request, 'course/signup.html', {'error': 'كلمات المرور غير متطابقة! ❌'})
+
+        # 2. حل مشكلة التكرار: التأكد إن الاسم مش موجود في نيون
+        if User.objects.filter(username=username).exists():
+            # إرسال رسالة خطأ واضحة للبنت
+            return render(request, 'course/signup.html', {
+                'error': f' اسم "{username}" محجوز فعلاً.. جربي تضيفي اسمك الثنائي 🎀'
+            })
+
+        # 3. لو كله تمام، كريت اليوزر وسيفه في نيون
+        User.objects.create_user(username=username, password=password)
+        return redirect('login')
+
+    return render(request, 'course/signup.html')
     else:
         form = StudentSignUpForm()
     return render(request, 'registration/signup.html', {'form': form, 'error': error_msg})
@@ -228,7 +234,7 @@ def add_custom_user(request):
             # 1. التشييك على الاسم
             if User.objects.filter(username=username).exists():
                 # إرسال رسالة الخطأ
-                messages.error(request, f'يا ، اسم "{username}" موجود فعلاً! حاولي تضيفي اسم ثنائي 🌸')
+                messages.error(request, f' اسم "{username}" موجود فعلاً! حاولي تضيفي اسم ثنائي 🌸')
                 # ضروري جداً تعمل render هنا عشان الرسالة تظهر
                 return render(request, 'course/add_user.html', {'form': form})
 

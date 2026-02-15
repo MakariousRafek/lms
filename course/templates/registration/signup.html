@@ -5,7 +5,6 @@
 {% block content %}
 <style>
     body {
-        /* خلفية متدرجة رقيقة تناسب ثيم البنات */
         background: linear-gradient(120deg, #fff0f3 0%, #fce4ec 100%);
         min-height: 100vh;
         display: flex;
@@ -28,8 +27,14 @@
         border-radius: 15px;
         padding: 12px;
         border: 1px solid #f8bbd0;
-        text-align: right; /* الاتجاه عربي دائماً */
+        text-align: right;
         margin-bottom: 15px;
+    }
+    /* تحسين شكل الإنبوت عند التركيز */
+    .form-control:focus {
+        border-color: #f06292;
+        box-shadow: 0 0 0 0.2rem rgba(240, 98, 146, 0.1);
+        outline: none;
     }
     .btn-signup {
         background: linear-gradient(135deg, #c2185b 0%, #f06292 100%);
@@ -55,9 +60,9 @@
 
     <form method="POST">
         {% csrf_token %}
-        
+
         {% if error %}
-        <div class="alert alert-danger text-center" style="border-radius: 15px; background-color: #ffebee; color: #c62828;">
+        <div class="alert alert-danger text-center shadow-sm" style="border-radius: 15px; background-color: #fff0f3; color: #c2185b; border: 1px solid #f8bbd0;">
             {{ error }}
         </div>
         {% endif %}
