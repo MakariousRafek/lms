@@ -212,6 +212,9 @@ def edit_lesson(request, lesson_id):
 # ==========================================
 # 6. إدارة المستخدمين (إضافة وحذف)
 # ==========================================
+from django.contrib import messages  # عشان نظهر رسالة الخطأ للبنت
+
+
 @staff_member_required
 def add_custom_user(request):
     if request.method == 'POST':
@@ -219,18 +222,24 @@ def add_custom_user(request):
         if form.is_valid():
             username = form.cleaned_data['username']
             role = form.cleaned_data['role']
+
+            # الحل هنا: تشيك لو الاسم موجود قبل الكرية
+            if User.objects.filter(username=username).exists():
+                messages.error(request, f'يا، اسم "{username}" موجود فعلاً! حاولي تضيفي اسم ثنائي مميز 🌸')
+                return render(request, 'course/add_user.html', {'form': form})
+
             user = User.objects.create(username=username)
             user.set_unusable_password()
             if role == 'admin':
                 user.is_staff = True
                 user.is_superuser = True
             user.save()
+
+            messages.success(request, f'تمت إضافة {username} بنجاح! ✅')
             return redirect('dashboard')
     else:
         form = AddUserForm()
     return render(request, 'course/add_user.html', {'form': form})
-
-
 @staff_member_required
 def delete_user(request, user_id):
     user_to_delete = get_object_or_404(User, id=user_id)

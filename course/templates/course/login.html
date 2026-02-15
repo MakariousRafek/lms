@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إعدادي بنات </title>
+    <title>إعدادي بنات</title>
     <style>
+        /* ... الكود القديم بتاعك كله زي ما هو ... */
         body {
             background-color: #fce4ec;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -24,106 +25,69 @@
             text-align: center;
         }
 
-        /* الوردة اللي في الصورة */
-        .flower-icon {
-            font-size: 50px;
-            color: #d63384;
-            margin-bottom: 10px;
-        }
+        .flower-icon { font-size: 50px; color: #d63384; margin-bottom: 10px; }
+        h2 { color: #b01e56; margin: 5px 0; font-size: 28px; }
+        .subtitle { color: #666; font-size: 14px; margin-bottom: 25px; }
+        .pink-note { background-color: #fdf2f5; color: #d63384; padding: 12px; border-radius: 12px; font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
+        .input-label { display: block; text-align: right; font-weight: bold; color: #b01e56; margin-bottom: 8px; font-size: 14px; }
+        .input-group { margin-bottom: 20px; }
+        input { width: 92%; padding: 12px; border: 1px solid #eee; border-radius: 12px; background-color: #fafafa; outline: none; font-size: 15px; transition: 0.3s; text-align: right; }
+        input:focus { border-color: #f8bbd0; background-color: #fff; }
+        .btn-login { width: 100%; padding: 14px; background-color: #d63384; color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 17px; font-weight: bold; box-shadow: 0 4px 10px rgba(214, 51, 132, 0.3); margin-top: 10px; }
+        .btn-login:hover { background-color: #c2185b; }
+        .signup-container { margin-top: 25px; padding-top: 20px; border-top: 1px solid #fdf2f5; }
+        .btn-signup { display: inline-block; margin-top: 10px; padding: 10px 20px; color: #d63384; text-decoration: none; border: 2px solid #d63384; border-radius: 25px; font-weight: bold; font-size: 14px; transition: 0.3s; }
+        .btn-signup:hover { background-color: #fdf2f5; }
 
-        h2 {
-            color: #b01e56;
-            margin: 5px 0;
-            font-size: 28px;
-        }
-
-        .subtitle {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-
-        /* تنسيق الرسائل الوردية */
-        .pink-note {
-            background-color: #fdf2f5;
-            color: #d63384;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 13px;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .input-label {
+        /* --- استايل الـ Popup الجديد --- */
+        .forgot-pass-link {
             display: block;
-            text-align: right;
+            margin-top: 15px;
+            color: #d63384;
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
             font-weight: bold;
-            color: #b01e56;
-            margin-bottom: 8px;
-            font-size: 14px;
         }
 
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        input {
-            width: 92%;
-            padding: 12px;
-            border: 1px solid #eee;
-            border-radius: 12px;
-            background-color: #fafafa;
-            outline: none;
-            font-size: 15px;
-            transition: 0.3s;
-            text-align: right;
-        }
-
-        input:focus {
-            border-color: #f8bbd0;
-            background-color: #fff;
-        }
-
-        .btn-login {
+        /* الـ Overlay (الخلفية المظلمة) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            padding: 14px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* بوكس الرسالة نفسه */
+        .modal-box {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .btn-close-modal {
+            margin-top: 20px;
+            padding: 8px 20px;
             background-color: #d63384;
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 17px;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(214, 51, 132, 0.3);
-            margin-top: 10px;
-        }
-
-        .btn-login:hover {
-            background-color: #c2185b;
-        }
-
-        /* زرار الساين أب الجديد */
-        .signup-container {
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #fdf2f5;
-        }
-
-        .btn-signup {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 10px 20px;
-            color: #d63384;
-            text-decoration: none;
-            border: 2px solid #d63384;
-            border-radius: 25px;
-            font-weight: bold;
-            font-size: 14px;
-            transition: 0.3s;
-        }
-
-        .btn-signup:hover {
-            background-color: #fdf2f5;
         }
     </style>
 </head>
@@ -157,11 +121,31 @@
             <button type="submit" class="btn-login">دخول للمنصة ✨</button>
         </form>
 
+        <a class="forgot-pass-link" onclick="showPopup()">نسيتي كلمة المرور؟</a>
+
         <div class="signup-container">
             <p style="font-size: 13px; color: #888;">أو سجلي كطالبة جديدة بشكل رسمي من هنا:</p>
             <a href="{% url 'signup' %}" class="btn-signup">إنشاء حساب جديد 🎀</a>
         </div>
     </div>
+
+    <div id="popupOverlay" class="modal-overlay" onclick="hidePopup()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <div style="font-size: 40px;">🧐</div>
+            <h3 style="color: #b01e56; margin-top: 10px;">نسيتي الباسورد؟</h3>
+            <p style="color: #666; font-size: 15px;">اتواصلي مع **تاسوني رارا** عشان ترجعهولك ✨</p>
+            <button class="btn-close-modal" onclick="hidePopup()">فهمت ✅</button>
+        </div>
+    </div>
+
+    <script>
+        function showPopup() {
+            document.getElementById('popupOverlay').style.display = 'flex';
+        }
+        function hidePopup() {
+            document.getElementById('popupOverlay').style.display = 'none';
+        }
+    </script>
 
 </body>
 </html>
