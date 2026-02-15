@@ -1,6 +1,7 @@
 from django.contrib import admin
-from django.urls import path, include  # ضروري تضيف include هنا
-from django.views.generic import RedirectView # استيراد للتحويل التلقائي
+from django.urls import path, include
+from django.views.generic import RedirectView
+from django.contrib.auth.views import LogoutView
 from course.views import (
     custom_login_view,
     signup_view,
@@ -15,13 +16,14 @@ from course.views import (
     add_custom_user,
     delete_user
 )
-from django.contrib.auth.views import LogoutView # استيراد دالة الخروج الافتراضية
 
 urlpatterns = [
-path('', RedirectView.as_view(url='login/'), name='go-to-login'),
+    # التعديل هنا: أضفنا السلاش '/' قبل كلمة login لضمان التحويل الصحيح
+    path('', RedirectView.as_view(url='/login/'), name='go-to-login'),
+
     path('admin/', admin.site.urls),
 
-    # السطر ده هو اللي هيخلي اللغة تتغير فعلياً
+    # روابط اللغة (اختياري لو فعلتها في الـ settings)
     path('i18n/', include('django.conf.urls.i18n')),
 
     # روابط الدخول والتسجيل
@@ -43,5 +45,7 @@ path('', RedirectView.as_view(url='login/'), name='go-to-login'),
     path('dashboard/add-user/', add_custom_user, name='add_custom_user'),
     path('dashboard/delete-user/<int:user_id>/', delete_user, name='delete_user'),
     path('grade-essays/<int:progress_id>/', grade_essays, name='grade_essays'),
-path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+
+    # رابط الخروج
+    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
 ]

@@ -56,13 +56,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'lms_project.wsgi.application'
+import dj_database_url
+import os
 
-# 6. الداتابيز
+# بدل الكود القديم بتاع SQLite
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default='postgresql://neondb_owner:npg_i3LxKeG9ucMp@ep-young-darkness-ai3v0i82-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require',
+        conn_max_age=600
+    )
 }
 
 # 7. إعدادات اللغات الدولية
