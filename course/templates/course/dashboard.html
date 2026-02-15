@@ -101,84 +101,80 @@
     </div>
 
     <script>
-        const canvas = document.getElementById('glitterCanvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
+    const canvas = document.getElementById('glitterCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    const maxParticles = 80; // حد أقصى عشان الموقع ميهنجش
 
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Particle {
+        constructor(x, y, isShake = false) {
+            this.x = x; this.y = y;
+            this.size = isShake ? Math.random() * 6 + 2 : Math.random() * 3 + 1;
+            this.speedX = Math.random() * 3 - 1.5;
+            this.speedY = Math.random() * 3 - 1.5;
+            this.color = `hsl(${Math.random() * 30 + 330}, 100%, 85%)`;
+            this.opacity = 1;
         }
-        window.addEventListener('resize', resize);
-        resize();
+        update() {
+            this.x += this.speedX; this.y += this.speedY;
+            this.opacity -= 0.02; // النجوم بتختفي أسرع عشان تخفف الحمل
+        }
+        draw() {
+            ctx.save();
+            ctx.globalAlpha = this.opacity;
+            ctx.fillStyle = this.color;
+            // تقليل الـ Shadow Blur لتحسين الأداء
+            ctx.shadowBlur = 5;
+            ctx.shadowColor = "white";
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
 
-        class Particle {
-            constructor(x, y, isShake = false) {
-                this.x = x; this.y = y;
-                this.size = isShake ? Math.random() * 8 + 2 : Math.random() * 5 + 1;
-                this.speedX = Math.random() * 4 - 2;
-                this.speedY = Math.random() * 4 - 2;
-                this.color = `hsl(${Math.random() * 40 + 320}, 100%, 85%)`;
-                this.opacity = 1;
-            }
-            update() {
-                this.x += this.speedX; this.y += this.speedY;
-                if (this.opacity > 0.015) this.opacity -= 0.015;
-            }
-            draw() {
-                ctx.save();
-                ctx.globalAlpha = this.opacity;
-                ctx.fillStyle = this.color;
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = "white";
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
+    function addParticles(x, y, count, isShake = false) {
+        for (let i = 0; i < count; i++) {
+            if (particles.length < maxParticles) { // التأكد من عدم تخطي الحد الأقصى
+                particles.push(new Particle(x, y, isShake));
             }
         }
+    }
 
-        // جليتر الماوس
-        window.addEventListener('mousemove', function(e) {
-            for (let i = 0; i < 6; i++) {
-                particles.push(new Particle(e.x, e.y));
+    window.addEventListener('mousemove', (e) => addParticles(e.x, e.y, 2));
+
+    let lastX, lastY, lastZ;
+    if (window.DeviceMotionEvent) {
+        window.addEventListener('devicemotion', (event) => {
+            let acc = event.accelerationIncludingGravity;
+            if (!acc || !acc.x) return;
+            let delta = Math.abs(lastX - acc.x) + Math.abs(lastY - acc.y);
+            if (delta > 20) {
+                addParticles(Math.random() * canvas.width, Math.random() * canvas.height, 5, true);
             }
+            lastX = acc.x; lastY = acc.y;
         });
+    }
 
-        // ميزة هز الموبايل
-        let lastX, lastY, lastZ;
-        let threshold = 15;
-
-        if (window.DeviceMotionEvent) {
-            window.addEventListener('devicemotion', (event) => {
-                let acc = event.accelerationIncludingGravity;
-                if (!acc || !acc.x) return;
-
-                let deltaX = Math.abs(lastX - acc.x);
-                let deltaY = Math.abs(lastY - acc.y);
-                let deltaZ = Math.abs(lastZ - acc.z);
-
-                if (deltaX + deltaY + deltaZ > threshold) {
-                    for (let i = 0; i < 15; i++) {
-                        particles.push(new Particle(Math.random() * canvas.width, Math.random() * canvas.height, true));
-                    }
-                }
-                lastX = acc.x; lastY = acc.y; lastZ = acc.z;
-            });
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-                if (particles[i].opacity <= 0.015) {
-                    particles.splice(i, 1); i--;
-                }
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update();
+            particles[i].draw();
+            if (particles[i].opacity <= 0) {
+                particles.splice(i, 1); i--;
             }
-            requestAnimationFrame(animate);
         }
-        animate();
-    </script>
+        requestAnimationFrame(animate);
+    }
+    animate();
+</script>
 </body>
 </html>
