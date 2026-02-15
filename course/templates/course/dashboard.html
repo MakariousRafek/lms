@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إعدادي بنات - العالم السحري ✨</title>
+    <title>إعدادي بنات ✨</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -16,16 +16,16 @@
             margin: 0; padding: 0; width: 100%; height: 100%;
             overflow: hidden; font-family: 'Cairo', sans-serif;
             background: radial-gradient(circle at center, #ff80ab, #f8bbd0, #fce4ec);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
         }
 
+        /* كانفاس الجليتر */
         #glitterCanvas {
             position: absolute; top: 0; left: 0;
             width: 100%; height: 100%; pointer-events: none; z-index: 1;
         }
 
+        /* أزرار التنقل */
         .top-nav {
             position: absolute; top: 30px; right: 40px;
             display: flex; gap: 15px; z-index: 1000;
@@ -42,6 +42,7 @@
         .btn-signup { background: var(--glass); color: var(--dark-rose) !important; }
         .btn-nav:hover { transform: scale(1.1); box-shadow: 0 15px 30px rgba(255, 64, 129, 0.4); }
 
+        /* الكارد السحرية */
         .magic-card {
             position: relative; z-index: 10;
             background: rgba(255, 255, 255, 0.75);
@@ -57,16 +58,9 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* تنسيق الوردة في المنتصف */
-        .flower-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 15px;
-        }
-
+        .flower-container { display: flex; justify-content: center; margin-bottom: 15px; }
         .main-flower {
-            font-size: 6.5rem;
-            display: inline-block;
+            font-size: 6.5rem; display: inline-block;
             filter: drop-shadow(0 0 15px rgba(255,64,129,0.5));
             animation: flowerFloat 4s infinite ease-in-out;
         }
@@ -76,24 +70,15 @@
             50% { transform: translateY(-15px); }
         }
 
-        h1 {
-            color: var(--dark-rose); font-size: 3.2rem; font-weight: 900;
-            margin: 5px 0;
-        }
-
-        .sub-text { color: #880e4f; font-weight: bold; font-size: 1.1rem; margin-bottom: 25px; }
-
         .church-badge {
-            background: var(--dark-rose);
-            color: white;
-            padding: 8px 25px;
-            border-radius: 50px;
-            display: inline-block;
-            font-size: 0.85rem;
-            margin-bottom: 20px;
-            font-weight: 900;
-            box-shadow: 0 4px 10px rgba(194, 24, 91, 0.2);
+            background: var(--dark-rose); color: white;
+            padding: 8px 25px; border-radius: 50px;
+            display: inline-block; font-size: 0.85rem;
+            margin-bottom: 20px; font-weight: 900;
         }
+
+        h1 { color: var(--dark-rose); font-size: 3.2rem; font-weight: 900; margin: 5px 0; }
+        .sub-text { color: #880e4f; font-weight: bold; font-size: 1.1rem; margin-bottom: 25px; }
     </style>
 </head>
 <body>
@@ -101,7 +86,7 @@
     <canvas id="glitterCanvas"></canvas>
 
     <nav class="top-nav">
-        <a href="/login/" class="btn-nav btn-login">دخول للمنصة</a>
+        <a href="/login/" class="btn-nav btn-login">تسجيل دخول</a>
         <a href="/signup/" class="btn-nav btn-signup">إنشاء حساب</a>
     </nav>
 
@@ -109,12 +94,10 @@
         <div class="flower-container">
             <div class="main-flower">🌸</div>
         </div>
-
         <div class="church-badge"> كنيسة الأنبا أنطونيوس - المنيا</div>
-
         <h1>إعدادي بنات</h1>
-        <p class="sub-text">أهلاً بيكي في خدمة إعدادي بنات كنيسة الأنبا أنطونيوس بالمنيا 🎀</p>
-        <p style="color: #666; font-size: 0.95rem; font-weight: bold;">سجلي بسرعة مستنية إيه؟ ✨</p>
+        <p class="sub-text">أهلاً بيكي في خدمة إعدادي بنات بالمنيا 🎀</p>
+        <p style="color: #666; font-size: 0.95rem; font-weight: bold;">يلا سجلي بسرعة مستنية ايه؟ ✨</p>
     </div>
 
     <script>
@@ -130,9 +113,9 @@
         resize();
 
         class Particle {
-            constructor(x, y) {
+            constructor(x, y, isShake = false) {
                 this.x = x; this.y = y;
-                this.size = Math.random() * 5 + 1;
+                this.size = isShake ? Math.random() * 8 + 2 : Math.random() * 5 + 1;
                 this.speedX = Math.random() * 4 - 2;
                 this.speedY = Math.random() * 4 - 2;
                 this.color = `hsl(${Math.random() * 40 + 320}, 100%, 85%)`;
@@ -155,11 +138,34 @@
             }
         }
 
+        // جليتر الماوس
         window.addEventListener('mousemove', function(e) {
             for (let i = 0; i < 6; i++) {
                 particles.push(new Particle(e.x, e.y));
             }
         });
+
+        // ميزة هز الموبايل
+        let lastX, lastY, lastZ;
+        let threshold = 15;
+
+        if (window.DeviceMotionEvent) {
+            window.addEventListener('devicemotion', (event) => {
+                let acc = event.accelerationIncludingGravity;
+                if (!acc || !acc.x) return;
+
+                let deltaX = Math.abs(lastX - acc.x);
+                let deltaY = Math.abs(lastY - acc.y);
+                let deltaZ = Math.abs(lastZ - acc.z);
+
+                if (deltaX + deltaY + deltaZ > threshold) {
+                    for (let i = 0; i < 15; i++) {
+                        particles.push(new Particle(Math.random() * canvas.width, Math.random() * canvas.height, true));
+                    }
+                }
+                lastX = acc.x; lastY = acc.y; lastZ = acc.z;
+            });
+        }
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
