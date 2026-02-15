@@ -62,8 +62,8 @@ import os
 # بدل الكود القديم بتاع SQLite
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://neondb_owner:npg_i3LxKeG9ucMp@ep-young-darkness-ai3v0i82-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require',
-        conn_max_age=600
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
     )
 }
 
