@@ -19,7 +19,7 @@
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* الجليتر في أعلى طبقة وبأداء فائق */
+        /* الجليتر في أعلى طبقة */
         #glitterCanvas {
             position: absolute; top: 0; left: 0;
             width: 100%; height: 100%;
@@ -36,52 +36,31 @@
         .magic-switch-container {
             background: rgba(255, 255, 255, 0.6); padding: 6px 14px;
             border-radius: 30px; backdrop-filter: blur(10px);
-            display: flex; align-items: center; gap: 8px;
-            border: 1px solid white;
+            display: flex; align-items: center; gap: 8px; border: 1px solid white;
         }
 
         .switch-label { color: var(--dark-rose); font-weight: 900; font-size: 0.75rem; }
-
         .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc; transition: .4s; border-radius: 34px;
-        }
-        .slider:before {
-            position: absolute; content: "✨"; display: flex; align-items: center; justify-content: center;
-            height: 18px; width: 18px; left: 2px; bottom: 2px;
-            background-color: white; transition: .4s; border-radius: 50%; font-size: 10px;
-        }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: "✨"; display: flex; align-items: center; justify-content: center; height: 18px; width: 18px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; font-size: 10px; }
         input:checked + .slider { background-color: var(--primary-rose); }
         input:checked + .slider:before { transform: translateX(22px); }
 
         .top-nav { display: flex; gap: 8px; }
-        .btn-nav {
-            padding: 8px 16px; border-radius: 50px; text-decoration: none; font-weight: 900;
-            font-size: 0.8rem; transition: 0.4s; backdrop-filter: blur(10px); border: 1px solid var(--dark-rose);
-        }
+        .btn-nav { padding: 8px 16px; border-radius: 50px; text-decoration: none; font-weight: 900; font-size: 0.8rem; border: 1px solid var(--dark-rose); }
         .btn-login { background: var(--dark-rose); color: white !important; }
         .btn-signup { background: var(--glass); color: var(--dark-rose) !important; }
 
         .magic-card {
             position: relative; z-index: 10; background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(20px); border-radius: 40px; padding: 45px 25px;
-            width: 85%; max-width: 450px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-            border: 1px solid white;
+            width: 85%; max-width: 450px; text-align: center; border: 1px solid white;
         }
 
         .main-flower { font-size: 5.5rem; animation: flowerFloat 4s infinite ease-in-out; display: inline-block; }
         @keyframes flowerFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-
         h1 { color: var(--dark-rose); font-size: 2.8rem; font-weight: 900; margin: 10px 0; }
-        .sub-text { color: #880e4f; font-weight: bold; font-size: 1rem; margin-bottom: 10px; }
-
-        @media (max-width: 400px) {
-            h1 { font-size: 2.3rem; }
-            .main-flower { font-size: 4.8rem; }
-            .header-controls { top: 15px; }
-        }
     </style>
 </head>
 <body>
@@ -90,13 +69,12 @@
 
     <div class="header-controls">
         <div class="magic-switch-container">
-            <span class="switch-label">وضـع السحر</span>
+            <span class="switch-label">شغليه وهزي الموبيل</span>
             <label class="switch">
                 <input type="checkbox" id="magicToggle" onclick="toggleMagic(this)">
                 <span class="slider"></span>
             </label>
         </div>
-
         <nav class="top-nav">
             <a href="/login/" class="btn-nav btn-login">دخول</a>
             <a href="/signup/" class="btn-nav btn-signup">تسجيل</a>
@@ -109,15 +87,15 @@
         </div>
         <div style="background: var(--dark-rose); color: white; padding: 6px 20px; border-radius: 50px; display: inline-block; font-size: 0.75rem; margin-bottom: 15px; font-weight: 900;">كنيسة الأنبا أنطونيوس - المنيا</div>
         <h1>إعدادي بنات</h1>
-        <p class="sub-text">أهلاً بيكي في خدمتنا بالمنيا 🎀</p>
-        <p style="color: #666; font-size: 0.85rem;">افتحي وضع السحر وهزي الموبايل ✨</p>
-    </div>
+<p style="color: #880e4f; font-weight: bold; font-size: 1.1rem; margin-bottom: 20px;">أهلاً بيكي اعدادي بنات كنيسة الانبا انطونيوس - المنيا 🎀</p>
+
+<p style="color: #666; font-size: 0.9rem;">سجلي يلا مستنية ايه؟ ✨</p>    </div>
 
     <script>
     const canvas = document.getElementById('glitterCanvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
-    const maxParticles = 40; // حد صارم للحفاظ على سرعة الموبايل
+    const maxParticles = 100; // زودنا العدد شوية للبهجة
     let magicEnabled = false;
 
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
@@ -127,16 +105,16 @@
     class Particle {
         constructor(x, y, isShake = false) {
             this.x = x; this.y = y;
-            this.size = isShake ? Math.random() * 5 + 1 : Math.random() * 2 + 0.5;
-            this.speedX = Math.random() * 3 - 1.5; this.speedY = Math.random() * 3 - 1.5;
-            this.color = `hsl(${Math.random() * 20 + 340}, 100%, 90%)`; // لون فاتح بدون ظل
+            this.size = isShake ? Math.random() * 6 + 2 : Math.random() * 3 + 1;
+            this.speedX = (Math.random() - 0.5) * 4;
+            this.speedY = (Math.random() - 0.5) * 4;
+            this.color = `hsl(${Math.random() * 40 + 320}, 100%, 85%)`;
             this.opacity = 1;
         }
-        update() { this.x += this.speedX; this.y += this.speedY; this.opacity -= 0.04; } // اختفاء سريع
+        update() { this.x += this.speedX; this.y += this.speedY; this.opacity -= 0.03; }
         draw() {
             if (this.opacity <= 0) return;
             ctx.save(); ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color;
-            // تم إلغاء shadowBlur لزيادة السرعة القصوى
             ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); ctx.restore();
         }
     }
@@ -148,26 +126,27 @@
         }
     }
 
-    // دعم اللمس الخفيف
-    window.addEventListener('mousemove', (e) => addParticles(e.x, e.y, 1));
+    // جليتر الماوس واللمس (كثفناه هنا)
+    window.addEventListener('mousemove', (e) => addParticles(e.clientX, e.clientY, 3));
     window.addEventListener('touchmove', (e) => {
-        addParticles(e.touches[0].clientX, e.touches[0].clientY, 1);
+        addParticles(e.touches[0].clientX, e.touches[0].clientY, 3);
     }, {passive: true});
 
-    let lastX, lastY;
+    let lastX, lastY, lastZ;
     function handleMotion(event) {
         let acc = event.accelerationIncludingGravity;
-        if (!acc || !acc.x) return;
-        let delta = Math.abs(lastX - acc.x) + Math.abs(lastY - acc.y);
-        if (delta > 25) { // حساسية متزنة للهز
-            addParticles(Math.random() * canvas.width, Math.random() * canvas.height, 3, true);
+        if (!acc) return;
+        let delta = Math.abs((lastX || 0) - acc.x) + Math.abs((lastY || 0) - acc.y);
+
+        if (delta > 15) { // قللنا الرقم لزيادة الحساسية
+            addParticles(Math.random() * canvas.width, Math.random() * canvas.height, 8, true);
         }
         lastX = acc.x; lastY = acc.y;
     }
 
     function toggleMagic(checkbox) {
         if (checkbox.checked) {
-            if (typeof DeviceMotionEvent.requestPermission === 'function') {
+            if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
                 DeviceMotionEvent.requestPermission().then(state => {
                     if (state === 'granted') {
                         window.addEventListener('devicemotion', handleMotion);
