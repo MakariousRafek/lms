@@ -19,97 +19,96 @@
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* كانفاس الجليتر */
         #glitterCanvas {
             position: absolute; top: 0; left: 0;
             width: 100%; height: 100%; pointer-events: none; z-index: 1;
         }
 
-        /* أزرار التنقل */
-        .top-nav {
-            position: absolute; top: 30px; right: 40px;
-            display: flex; gap: 15px; z-index: 1000;
+        /* تصميم السويتش السحري */
+        .magic-switch-container {
+            position: absolute; top: 30px; left: 40px; /* عكس مكان الأزرار */
+            display: flex; align-items: center; gap: 10px; z-index: 1000;
+            background: rgba(255, 255, 255, 0.4); padding: 5px 15px;
+            border-radius: 30px; backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
+        .switch-label { color: var(--dark-rose); font-weight: 900; font-size: 0.8rem; }
+
+        .switch {
+            position: relative; display: inline-block; width: 50px; height: 26px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc; transition: .4s; border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute; content: "✨"; display: flex; align-items: center; justify-content: center;
+            height: 20px; width: 20px; left: 3px; bottom: 3px;
+            background-color: white; transition: .4s; border-radius: 50%; font-size: 12px;
+        }
+
+        input:checked + .slider { background-color: var(--primary-rose); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* باقي الأزرار */
+        .top-nav { position: absolute; top: 30px; right: 40px; display: flex; gap: 15px; z-index: 1000; }
         .btn-nav {
-            padding: 12px 30px; border-radius: 50px;
-            text-decoration: none; font-weight: 900;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);
+            padding: 10px 25px; border-radius: 50px; text-decoration: none; font-weight: 900;
+            transition: 0.4s; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);
         }
-
-        .btn-login { background: var(--dark-rose); color: white !important; box-shadow: 0 10px 20px rgba(194,24,91,0.3); }
+        .btn-login { background: var(--dark-rose); color: white !important; }
         .btn-signup { background: var(--glass); color: var(--dark-rose) !important; }
-        .btn-nav:hover { transform: scale(1.1); box-shadow: 0 15px 30px rgba(255, 64, 129, 0.4); }
 
-        /* الكارد السحرية */
         .magic-card {
-            position: relative; z-index: 10;
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-radius: 40px; border: 2px solid rgba(255, 255, 255, 0.5);
-            padding: 50px 40px; width: 90%; max-width: 500px;
-            text-align: center; box-shadow: 0 25px 80px rgba(0,0,0,0.1);
-            animation: cardPop 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; z-index: 10; background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px); border-radius: 40px; padding: 50px 40px;
+            width: 90%; max-width: 500px; text-align: center; box-shadow: 0 25px 80px rgba(0,0,0,0.1);
         }
-
-        @keyframes cardPop {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .flower-container { display: flex; justify-content: center; margin-bottom: 15px; }
-        .main-flower {
-            font-size: 6.5rem; display: inline-block;
-            filter: drop-shadow(0 0 15px rgba(255,64,129,0.5));
-            animation: flowerFloat 4s infinite ease-in-out;
-        }
-
-        @keyframes flowerFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-
-        .church-badge {
-            background: var(--dark-rose); color: white;
-            padding: 8px 25px; border-radius: 50px;
-            display: inline-block; font-size: 0.85rem;
-            margin-bottom: 20px; font-weight: 900;
-        }
-
+        .main-flower { font-size: 6.5rem; animation: flowerFloat 4s infinite ease-in-out; display: inline-block; }
+        @keyframes flowerFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
         h1 { color: var(--dark-rose); font-size: 3.2rem; font-weight: 900; margin: 5px 0; }
-        .sub-text { color: #880e4f; font-weight: bold; font-size: 1.1rem; margin-bottom: 25px; }
     </style>
 </head>
 <body>
 
     <canvas id="glitterCanvas"></canvas>
 
+    <div class="magic-switch-container">
+        <span class="switch-label">شغلية و هزي الموبيل</span>
+        <label class="switch">
+            <input type="checkbox" id="magicToggle" onclick="toggleMagic(this)">
+            <span class="slider"></span>
+        </label>
+    </div>
+
     <nav class="top-nav">
-        <a href="/login/" class="btn-nav btn-login">تسجيل دخول</a>
-        <a href="/signup/" class="btn-nav btn-signup">إنشاء حساب</a>
+        <a href="/login/" class="btn-nav btn-login">دخول</a>
+        <a href="/signup/" class="btn-nav btn-signup">تسجيل</a>
     </nav>
 
     <div class="magic-card">
-        <div class="flower-container">
+        <div class="flower-container" style="display: flex; justify-content: center; margin-bottom: 15px;">
             <div class="main-flower">🌸</div>
         </div>
-        <div class="church-badge"> كنيسة الأنبا أنطونيوس - المنيا</div>
+        <div style="background: var(--dark-rose); color: white; padding: 6px 20px; border-radius: 50px; display: inline-block; font-size: 0.8rem; margin-bottom: 20px; font-weight: 900;">كنيسة الأنبا أنطونيوس - المنيا</div>
         <h1>إعدادي بنات</h1>
-        <p class="sub-text">أهلاً بيكي في خدمة إعدادي بنات بالمنيا 🎀</p>
-        <p style="color: #666; font-size: 0.95rem; font-weight: bold;">يلا سجلي بسرعة مستنية ايه؟ ✨</p>
+        <p style="color: #880e4f; font-weight: bold; font-size: 1.1rem; margin-bottom: 20px;">أهلاً بيكي اعدادي بنات كنيسة الانبا انطونيوس - المنيا 🎀</p>
+        <p style="color: #666; font-size: 0.9rem;">سجلي يلا مستنية ايه؟ ✨</p>
     </div>
 
     <script>
     const canvas = document.getElementById('glitterCanvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
-    const maxParticles = 80; // حد أقصى عشان الموقع ميهنجش
+    const maxParticles = 80;
+    let magicEnabled = false;
 
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.addEventListener('resize', resize);
     resize();
 
@@ -117,83 +116,68 @@
         constructor(x, y, isShake = false) {
             this.x = x; this.y = y;
             this.size = isShake ? Math.random() * 6 + 2 : Math.random() * 3 + 1;
-            this.speedX = Math.random() * 3 - 1.5;
-            this.speedY = Math.random() * 3 - 1.5;
+            this.speedX = Math.random() * 3 - 1.5; this.speedY = Math.random() * 3 - 1.5;
             this.color = `hsl(${Math.random() * 30 + 330}, 100%, 85%)`;
             this.opacity = 1;
         }
-        update() {
-            this.x += this.speedX; this.y += this.speedY;
-            this.opacity -= 0.02; // النجوم بتختفي أسرع عشان تخفف الحمل
-        }
+        update() { this.x += this.speedX; this.y += this.speedY; this.opacity -= 0.02; }
         draw() {
-            ctx.save();
-            ctx.globalAlpha = this.opacity;
-            ctx.fillStyle = this.color;
-            // تقليل الـ Shadow Blur لتحسين الأداء
-            ctx.shadowBlur = 5;
-            ctx.shadowColor = "white";
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
+            ctx.save(); ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color;
+            ctx.shadowBlur = 5; ctx.shadowColor = "white"; ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); ctx.restore();
         }
     }
 
     function addParticles(x, y, count, isShake = false) {
         for (let i = 0; i < count; i++) {
-            if (particles.length < maxParticles) { // التأكد من عدم تخطي الحد الأقصى
-                particles.push(new Particle(x, y, isShake));
-            }
+            if (particles.length < maxParticles) particles.push(new Particle(x, y, isShake));
         }
     }
 
-    window.addEventListener('mousemove', (e) => addParticles(e.x, e.y, 2));
+    window.addEventListener('mousemove', (e) => {
+        if (magicEnabled) addParticles(e.x, e.y, 2);
+    });
 
-    let lastX, lastY, lastZ;
-    if (window.DeviceMotionEvent) {
-        window.addEventListener('devicemotion', (event) => {
-            let acc = event.accelerationIncludingGravity;
-            if (!acc || !acc.x) return;
-            let delta = Math.abs(lastX - acc.x) + Math.abs(lastY - acc.y);
-            if (delta > 20) {
-                addParticles(Math.random() * canvas.width, Math.random() * canvas.height, 5, true);
+    let lastX, lastY;
+    function handleMotion(event) {
+        let acc = event.accelerationIncludingGravity;
+        if (!acc || !acc.x) return;
+        let delta = Math.abs(lastX - acc.x) + Math.abs(lastY - acc.y);
+        if (delta > 20) addParticles(Math.random() * canvas.width, Math.random() * canvas.height, 5, true);
+        lastX = acc.x; lastY = acc.y;
+    }
+
+    // وظيفة السويتش لطلب الإذن
+    function toggleMagic(checkbox) {
+        if (checkbox.checked) {
+            if (typeof DeviceMotionEvent.requestPermission === 'function') {
+                DeviceMotionEvent.requestPermission()
+                    .then(permissionState => {
+                        if (permissionState === 'granted') {
+                            window.addEventListener('devicemotion', handleMotion);
+                            magicEnabled = true;
+                        } else { checkbox.checked = false; }
+                    })
+                    .catch(() => { checkbox.checked = false; });
+            } else {
+                window.addEventListener('devicemotion', handleMotion);
+                magicEnabled = true;
             }
-            lastX = acc.x; lastY = acc.y;
-        });
+        } else {
+            window.removeEventListener('devicemotion', handleMotion);
+            magicEnabled = false;
+        }
     }
 
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         for (let i = 0; i < particles.length; i++) {
-            particles[i].update();
-            particles[i].draw();
-            if (particles[i].opacity <= 0) {
-                particles.splice(i, 1); i--;
-            }
+            particles[i].update(); particles[i].draw();
+            if (particles[i].opacity <= 0) { particles.splice(i, 1); i--; }
         }
         requestAnimationFrame(animate);
     }
-    // وظيفة لطلب الإذن من المستخدم
-function requestMotionPermission() {
-    if (typeof DeviceMotionEvent.requestPermission === 'function') {
-        // خاص بمستخدمي iOS
-        DeviceMotionEvent.requestPermission()
-            .then(permissionState => {
-                if (permissionState === 'granted') {
-                    window.addEventListener('devicemotion', handleMotion);
-                }
-            })
-            .catch(console.error);
-    } else {
-        // للمتصفحات التانية اللي مش بتحتاج إذن صريح
-        window.addEventListener('devicemotion', handleMotion);
-    }
-}
-
-// تعديل بسيط: ضيف الزرار ده جوه الكارد عشان البنات يدوسوا عليه
-// <button onclick="requestMotionPermission()" class="btn-nav">تفعيل السحر ✨</button>
     animate();
-</script>
+    </script>
 </body>
 </html>
