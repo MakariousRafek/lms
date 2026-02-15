@@ -19,34 +19,44 @@ class StudentSignUpForm(forms.Form):
     username = forms.CharField(max_length=150, label="اسم الطالبة الثنائي")
     password = forms.CharField(widget=forms.PasswordInput, label="كلمة المرور")
     confirm_password = forms.CharField(widget=forms.PasswordInput, label="تأكيد كلمة المرور")
+
+
 from django.contrib.auth.models import User
+from django.contrib.auth import login
 from django.shortcuts import render, redirect
-from django.contrib import messages
+from django.contrib import messages  # استيراد نظام الرسائل
+
 
 def signup_view(request):
+    error_msg = None
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
+        form = StudentSignUpForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            confirm_password = form.cleaned_data['confirm_password']
 
-        # 1. التأكد من تطابق كلمة المرور
-        if password != confirm_password:
-            return render(request, 'course/signup.html', {'error': 'كلمات المرور غير متطابقة! ❌'})
+            # 1. حل مشكلة التكرار لمنع الـ IntegrityError
+            if User.objects.filter(username=username).exists():
+                error_msg = "الاسم ده متسجل قبل كدة، جربي اسم تاني أو ادخلي لوجن 🎀"
 
-        # 2. حل مشكلة التكرار: التأكد إن الاسم مش موجود في نيون
-        if User.objects.filter(username=username).exists():
-            # إرسال رسالة خطأ واضحة للبنت
-            return render(request, 'course/signup.html', {
-                'error': f' اسم "{username}" محجوز فعلاً.. جربي تضيفي اسمك الثنائي 🎀'
-            })
+            # 2. التأكد من تطابق كلمة المرور
+            elif password != confirm_password:
+                error_msg = "كلمتي المرور غير متطابقتين ❌"
 
-        # 3. لو كله تمام، كريت اليوزر وسيفه في نيون
-        User.objects.create_user(username=username, password=password)
-        return redirect('login')
-
-    return render(request, 'course/signup.html')
+            else:
+                # 3. إنشاء الحساب الجديد في نيون ودخول أوتوماتيكي
+                user = User.objects.create_user(username=username, password=password)
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                messages.success(request, f"أهلاً بيكي يا {username} في كوكب البرية! ✨")
+                return redirect('home_redirect')
+        else:
+            # في حالة وجود أخطاء في الـ Form نفسه
+            error_msg = "تأكدي من صحة البيانات المكتوبة 🧐"
     else:
         form = StudentSignUpForm()
+
+    # نرسل المتغير باسم 'error' عشان يطابق الكود اللي في الـ Template بتاعك
     return render(request, 'registration/signup.html', {'form': form, 'error': error_msg})
 
 @csrf_exempt
