@@ -293,3 +293,6 @@ def student_dashboard(request):
 def lesson_detail(request, lesson_id):
     lesson = get_object_or_404(Lesson, id=lesson_id)
     return render(request, 'course/lesson_detail.html', {'lesson': lesson})
+def dashboard_view(request):
+    # ده الفيو اللي هيعرض صفحة الجليتر المبهرة
+    return render(request, 'course/dashboard.html')

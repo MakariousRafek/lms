@@ -1,192 +1,164 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إعدادي بنات - تسجيل الدخول</title>
-    <style>
-        /* التنسيق الأصلي اللي إنت عملته يا ميكاريوس */
-        body {
-            background-color: #fce4ec;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+{% extends 'course/base.html' %}
 
-        .login-box {
-            background: white;
-            padding: 40px 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            width: 380px;
-            text-align: center;
-        }
+{% block title %}تسجيل الدخول - إعدادي بنات{% endblock %}
 
-        .flower-icon {
-            font-size: 50px;
-            color: #d63384;
-            margin-bottom: 10px;
-        }
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-        h2 {
-            color: #b01e56;
-            margin: 5px 0;
-            font-size: 28px;
-        }
+<style>
+    body {
+        background: linear-gradient(120deg, #fff0f3 0%, #fce4ec 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+    }
+    .login-card {
+        border-radius: 30px;
+        border: none;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 15px 35px rgba(194, 24, 91, 0.15);
+        padding: 40px;
+        width: 100%;
+        max-width: 450px;
+        animation: fadeIn 0.8s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .login-header { text-align: center; margin-bottom: 30px; }
+    .login-header h2 { color: #c2185b; font-weight: bold; margin-top: 15px; }
 
-        .subtitle {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
+    .form-control {
+        border-radius: 15px;
+        padding: 12px 20px;
+        border: 1px solid #f8bbd0;
+        margin-bottom: 5px;
+        text-align: right;
+    }
+    .form-control:focus {
+        border-color: #c2185b;
+        box-shadow: 0 0 0 0.25rem rgba(194, 24, 91, 0.1);
+    }
+    .btn-login {
+        background: linear-gradient(135deg, #c2185b 0%, #f06292 100%);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        padding: 12px;
+        width: 100%;
+        font-weight: bold;
+        font-size: 1.1rem;
+        transition: 0.3s;
+        margin-top: 10px;
+    }
+    .btn-login:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(194, 24, 91, 0.3);
+        color: white;
+    }
 
-        .pink-note {
-            background-color: #fdf2f5;
-            color: #d63384;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 13px;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
+    /* ستايل الـ Popup والواتساب */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center; align-items: center;
+    }
+    .modal-box {
+        background: white; padding: 30px; border-radius: 25px;
+        width: 320px; text-align: center;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    }
+    .btn-whatsapp {
+        display: inline-flex; align-items: center; justify-content: center;
+        background-color: #25d366; color: white; text-decoration: none;
+        padding: 12px 25px; border-radius: 50px; font-weight: bold;
+        margin-top: 15px; transition: 0.3s; gap: 10px;
+    }
+    .btn-whatsapp:hover { background-color: #128c7e; transform: translateY(-2px); color: white; }
 
-        .input-label {
-            display: block;
-            text-align: right;
-            font-weight: bold;
-            color: #b01e56;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
+    .footer-text {
+        text-align: center;
+        margin-top: 25px;
+        color: #880e4f;
+        font-size: 0.9rem;
+        padding: 15px;
+        background: #fdf2f5;
+        border-radius: 15px;
+        line-height: 1.6;
+    }
+    .btn-signup-outline {
+        color: #c2185b; text-decoration: none; font-weight: bold;
+        border: 2px solid #c2185b; padding: 8px 20px;
+        border-radius: 20px; display: inline-block; transition: 0.3s;
+    }
+    .btn-signup-outline:hover { background-color: #c2185b; color: white; }
+</style>
 
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        input {
-            width: 92%;
-            padding: 12px;
-            border: 1px solid #eee;
-            border-radius: 12px;
-            background-color: #fafafa;
-            outline: none;
-            font-size: 15px;
-            transition: 0.3s;
-            text-align: right;
-        }
-
-        input:focus {
-            border-color: #f8bbd0;
-            background-color: #fff;
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 14px;
-            background-color: #d63384;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 17px;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(214, 51, 132, 0.3);
-            margin-top: 10px;
-        }
-
-        .btn-login:hover {
-            background-color: #c2185b;
-        }
-
-        .signup-container {
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #fdf2f5;
-        }
-
-        .btn-signup {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 10px 20px;
-            color: #d63384;
-            text-decoration: none;
-            border: 2px solid #d63384;
-            border-radius: 25px;
-            font-weight: bold;
-            font-size: 14px;
-            transition: 0.3s;
-        }
-
-        .btn-signup:hover {
-            background-color: #fdf2f5;
-        }
-
-        /* ستايل الـ Popup الـ Minimal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 1000;
-            justify-content: center; align-items: center;
-        }
-        .modal-box {
-            background: white; padding: 30px; border-radius: 20px;
-            width: 300px; text-align: center;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="login-box">
-        <div class="flower-icon">🌸</div>
+<div class="login-card">
+    <div class="login-header">
+        <div style="font-size: 4rem;">🌸</div>
         <h2>إعدادي بنات</h2>
-        <p class="subtitle">أهلاً بيكي في منصة كنيسة الأنبا أنطونيوس ✨</p>
+        <p class="text-muted">أهلاً بيكي في منصة كنيسة الأنبا أنطونيوس ✨</p>
+    </div>
 
+    <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
 
-        <form method="post">
-            {% csrf_token %}
-            <div class="input-group">
-                <label class="input-label">اسم المستخدم</label>
-                <input type="text" name="username" placeholder="اكتبي اسمك هنا.." required>
-            </div>
-
-            <div class="input-group">
-                <label class="input-label">كلمة المرور</label>
-                <input type="password" name="password" placeholder="********" required>
-            </div>
-
-            <button type="submit" class="btn-login">دخول للمنصة ✨</button>
-        </form>
-
-        <a href="#" onclick="showPopup()" style="display: block; margin-top: 15px; color: #d63384; font-size: 13px; text-decoration: none; font-weight: bold;">
-            نسيتي كلمة المرور؟
-        </a>
-
-        <div class="signup-container">
-            <p style="font-size: 13px; color: #888;">أو سجلي كطالبة جديدة بشكل رسمي من هنا:</p>
-            <a href="{% url 'signup' %}" class="btn-signup">إنشاء حساب جديد 🎀</a>
+        {% if error %}
+        <div class="alert alert-danger text-center shadow-sm mb-4"
+             style="border-radius: 15px; border: none; background-color: #ffebee; color: #c62828; font-size: 0.9rem;">
+            {{ error }}
         </div>
+        {% endif %}
+
+        <div class="mb-3">
+            <label class="form-label fw-bold" style="color: #c2185b; display: block; text-align: right; margin-right: 10px;">اسم المستخدم</label>
+            <input type="text" name="username" class="form-control" placeholder="اكتبي اسمك هنا.." required>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-bold" style="color: #c2185b; display: block; text-align: right; margin-right: 10px;">كلمة المرور</label>
+            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn btn-login shadow">دخول للمنصة ✨</button>
+    </form>
+
+    <div class="text-center mt-3">
+        <a href="#" onclick="showPopup()" style="color: #c2185b; font-size: 0.85rem; text-decoration: none; font-weight: bold;">
+            نسيتي الباسورد؟
+        </a>
     </div>
 
-    <div id="popupOverlay" class="modal-overlay" onclick="hidePopup()">
-        <div class="whatsapp-container" style="margin-top: 20px;">
-    <p style="font-size: 13px; color: #888; margin-bottom: 5px;">نسيتي كلمة المرور؟ تواصل مع تاسوني رارا</p>
-    <a href="https://wa.me/201287814422?text=ازيك%20يا%20تاسوني..%20أنا%20نسيت%20الباسورد%20بتاعتي"
-       target="_blank"
-       class="btn-whatsapp">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+    <div class="footer-text">
+        <p style="font-size: 0.85rem; color: #666; margin-bottom: 10px;">أو لو حابة تعملي حساب بنفسك:</p>
+        <a href="{% url 'signup' %}" class="btn-signup-outline">إنشاء حساب جديد 🎀</a>
+    </div>
 </div>
+
+<div id="popupOverlay" class="modal-overlay" onclick="hidePopup()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <div style="font-size: 40px; margin-bottom: 10px;">🧐</div>
+        <h4 style="color: #c2185b; font-weight: bold;">نسيتي الباسورد؟</h4>
+        <p style="font-size: 14px; color: #666;">اتواصلي مع تاسوني رارا ✨</p>
+
+        <a href="https://wa.me/201287814422?text=ازيك%20يا%20تاسوني..%20أنا%20نسيت%20الباسورد%20بتاعتي"
+           target="_blank" class="btn-whatsapp">
+            <i class="fab fa-whatsapp" style="font-size: 20px;"></i> كلمي تاسوني رارا
+        </a>
+        <p style="margin-top: 15px; font-size: 12px; color: #aaa; cursor: pointer;" onclick="hidePopup()">إغلاق</p>
     </div>
+</div>
 
-    <script>
-        function showPopup() { document.getElementById('popupOverlay').style.display = 'flex'; }
-        function hidePopup() { document.getElementById('popupOverlay').style.display = 'none'; }
-    </script>
-
-</body>
-</html>
+<script>
+    function showPopup() { document.getElementById('popupOverlay').style.display = 'flex'; }
+    function hidePopup() { document.getElementById('popupOverlay').style.display = 'none'; }
+</script>
+{% endblock %}
