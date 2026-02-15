@@ -38,7 +38,7 @@ def signup_view(request):
 
             # 1. حل مشكلة التكرار لمنع الـ IntegrityError
             if User.objects.filter(username=username).exists():
-                error_msg = "الاسم ده متسجل قبل كدة، جربي اسم تاني أو ادخلي لوجن 🎀"
+                error_msg = "الاسم ده متسجل قبل كدة، جربي اسم تاني  🎀"
 
             # 2. التأكد من تطابق كلمة المرور
             elif password != confirm_password:
@@ -48,7 +48,7 @@ def signup_view(request):
                 # 3. إنشاء الحساب الجديد في نيون ودخول أوتوماتيكي
                 user = User.objects.create_user(username=username, password=password)
                 login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                messages.success(request, f"أهلاً بيكي يا {username} في كوكب البرية! ✨")
+                messages.success(request, f"أهلاً بيكي يا {username} في اعدادي بنات! ✨")
                 return redirect('home_redirect')
         else:
             # في حالة وجود أخطاء في الـ Form نفسه
