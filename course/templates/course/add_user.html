@@ -5,35 +5,61 @@
 {% block content %}
 <div class="row justify-content-center mb-5">
     <div class="col-md-6">
-        <div class="card p-4">
-            <h3 class="text-center mb-4" style="color: var(--primary-color);">👤 إضافة مستخدم جديد</h3>
-            
-            {% if error_message %}
-            <div class="alert alert-danger text-center">{{ error_message }}</div>
+        <div class="card p-4 shadow-sm" style="border-radius: 20px; border: none;">
+            <h3 class="text-center mb-4" style="color: var(--primary-color); font-weight: bold;">👤 إضافة مستخدم جديد</h3>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} text-center shadow-sm" style="border-radius: 12px;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             {% endif %}
 
             <form method="POST">
                 {% csrf_token %}
-                
-                <div class="mb-3">
-                    <label class="form-label fw-bold">{{ form.username.label }}</label>
-                    {{ form.username }}
-                </div>
 
-                
+                <div class="mb-3">
+                    <label class="form-label fw-bold" style="color: #b01e56;">{{ form.username.label }}</label>
+                    <div class="input-group">
+                         {{ form.username }}
+                    </div>
+                    <div class="form-text mt-1">🎀 يفضل كتابة الاسم الثنائي لتجنب التكرار.</div>
+                </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">{{ form.role.label }}</label>
+                    <label class="form-label fw-bold" style="color: #b01e56;">{{ form.role.label }}</label>
                     {{ form.role }}
-                    <div class="form-text mt-2">المشرف يمكنه الدخول للوحة التحكم وإضافة دروس، بينما الطالب يمكنه فقط مشاهدة الفيديوهات وحل الاختبارات.</div>
+                    <div class="form-text mt-2" style="font-size: 0.85rem; color: #666;">
+                        🛡️ **المشرف**: يدخل للوحة التحكم ويضيف دروس. <br>
+                        🎓 **الطالب**: يشاهد الفيديوهات ويحل الاختبارات فقط.
+                    </div>
                 </div>
 
-                <div class="d-flex justify-content-between">
-                    <a href="{% url 'dashboard' %}" class="btn btn-secondary px-4">إلغاء والعودة</a>
-                    <button type="submit" class="btn btn-custom px-5">إنشاء الحساب</button>
+                <div class="d-flex justify-content-between gap-3 mt-4">
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary px-4" style="border-radius: 12px;">إلغاء والعودة</a>
+                    <button type="submit" class="btn btn-custom px-5 shadow-sm" style="background-color: var(--primary-color); color: white; border-radius: 12px; font-weight: bold;">
+                        إنشاء الحساب ✨
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<style>
+    /* تحسين شكل الفيلدز اللي طالعة من Django Form */
+    input, select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #eee !important;
+        border-radius: 12px !important;
+        background-color: #fafafa !important;
+    }
+    input:focus, select:focus {
+        border-color: #f8bbd0 !important;
+        box-shadow: 0 0 0 0.2rem rgba(214, 51, 132, 0.1) !important;
+        background-color: #fff !important;
+    }
+</style>
 {% endblock %}
