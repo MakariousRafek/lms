@@ -214,6 +214,8 @@ def edit_lesson(request, lesson_id):
 # ==========================================
 from django.contrib import messages  # عشان نظهر رسالة الخطأ للبنت
 
+from django.contrib import messages
+
 
 @staff_member_required
 def add_custom_user(request):
@@ -223,11 +225,14 @@ def add_custom_user(request):
             username = form.cleaned_data['username']
             role = form.cleaned_data['role']
 
-            # الحل هنا: تشيك لو الاسم موجود قبل الكرية
+            # 1. التشييك على الاسم
             if User.objects.filter(username=username).exists():
-                messages.error(request, f'يا، اسم "{username}" موجود فعلاً! حاولي تضيفي اسم ثنائي مميز 🌸')
+                # إرسال رسالة الخطأ
+                messages.error(request, f'يا ، اسم "{username}" موجود فعلاً! حاولي تضيفي اسم ثنائي 🌸')
+                # ضروري جداً تعمل render هنا عشان الرسالة تظهر
                 return render(request, 'course/add_user.html', {'form': form})
 
+            # 2. لو الاسم جديد، كمل الكرية عادي
             user = User.objects.create(username=username)
             user.set_unusable_password()
             if role == 'admin':
@@ -239,6 +244,7 @@ def add_custom_user(request):
             return redirect('dashboard')
     else:
         form = AddUserForm()
+
     return render(request, 'course/add_user.html', {'form': form})
 @staff_member_required
 def delete_user(request, user_id):
