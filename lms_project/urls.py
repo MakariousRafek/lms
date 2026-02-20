@@ -14,7 +14,7 @@ from course.views import (
     edit_lesson,
     add_custom_user,
     delete_user,
-    dashboard_view  # تأكد من استيراد الفيو الجديد بتاع الداشبورد المبهرة
+    dashboard_view, delete_lesson  # تأكد من استيراد الفيو الجديد بتاع الداشبورد المبهرة
 )
 
 urlpatterns = [
@@ -48,4 +48,8 @@ urlpatterns = [
 
     # 6. رابط الخروج
     path('logout/', LogoutView.as_view(next_page='home'), name='logout'),
+
+
+path('delete-lesson/<int:lesson_id>/', delete_lesson, name='delete_lesson'),
+
 ]

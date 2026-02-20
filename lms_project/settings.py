@@ -1,7 +1,9 @@
 import os
 from pathlib import Path
 from django.utils.translation import gettext_lazy as _ # ضروري لترجمة أسماء اللغات
-
+from dotenv import load_dotenv
+import dj_database_url
+load_dotenv()
 # 1. المسارات الأساسية
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -56,17 +58,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'lms_project.wsgi.application'
-import dj_database_url
-import os
 
-# بدل الكود القديم بتاع SQLite
+# هنجيب رابط Neon من البيئة المحيطة (Environment)
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
+        default=DATABASE_URL ,
         conn_max_age=600,
     )
 }
-
 # 7. إعدادات اللغات الدولية
 LANGUAGE_CODE = 'ar' # اللغة الافتراضية
 

@@ -111,12 +111,13 @@ def custom_admin_dashboard(request):
     ).order_by('-total_points')
 
     top_students = all_students[:3]
-
+    all_staff = User.objects.filter(is_staff=True).exclude(username='makarious').order_by('username')
     return render(request, 'course/admin_dashboard.html', {
         'all_progress': all_progress,
         'lessons': lessons,
         'all_students': all_students,
-        'top_students': top_students
+        'top_students': top_students,
+        'all_staff': all_staff,  # ضيف السطر ده
     })
 
 
@@ -296,3 +297,12 @@ def lesson_detail(request, lesson_id):
 def dashboard_view(request):
     # ده الفيو اللي هيعرض صفحة الجليتر المبهرة
     return render(request, 'course/dashboard.html')
+from django.shortcuts import get_object_or_404, redirect
+from .models import Lesson
+
+# في ملف views.py
+def delete_lesson(request, lesson_id):
+    lesson = get_object_or_404(Lesson, id=lesson_id)
+    if request.method == 'POST':
+        lesson.delete()
+    return redirect('dashboard')

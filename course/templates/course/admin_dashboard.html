@@ -10,18 +10,25 @@
     .btn-custom:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(194, 24, 91, 0.3); color: white; }
     .badge-pink { background-color: var(--accent-pink); color: var(--primary-rose); border-radius: 8px; padding: 5px 10px; font-weight: bold; }
     .table-container { background: white; border-radius: 20px; padding: 20px; }
+
+    .btn-delete-small {
+        background: #ff4d4d; color: white; padding: 5px 15px;
+        border-radius: 20px; font-size: 0.8rem; font-weight: bold;
+        border: 1px solid white; transition: 0.3s; cursor: pointer;
+    }
+    .btn-delete-small:hover { background: #cc0000; transform: scale(1.05); }
+
+    .badge-staff { background-color: #e3f2fd; color: #1976d2; border-radius: 8px; padding: 5px 10px; font-weight: bold; font-size: 0.75rem; }
 </style>
 
 <div class="card card-custom p-4 mb-4">
     <div class="row align-items-center">
         <div class="col-md-7">
             <h2 style="color: var(--primary-rose); font-weight: bold;">أهلاً يا تاسوني {{ request.user.username }} 🌸</h2>
-            <p class="text-muted mb-0">لوحة التحكم لإدارة المسابقات ومتابعة بناتي  ✨</p>
         </div>
         <div class="col-md-5 text-end">
             <a href="{% url 'add_custom_user' %}" class="btn btn-outline-primary ms-2 shadow-sm" style="border-radius: 12px;">👩‍💻 يوزر جديد</a>
             <a href="{% url 'add_lesson' %}" class="btn btn-custom ms-2 shadow-sm">🎀 مسابقة جديدة</a>
-
             <form action="{% url 'logout' %}" method="post" class="d-inline">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger shadow-sm" style="border-radius: 12px; padding: 10px 20px;">خروج</button>
@@ -46,26 +53,58 @@
 <div class="row">
     <div class="col-lg-6 mb-4">
         <h4 style="color: var(--primary-rose); font-weight: bold;">📚 إدارة المسابقات</h4>
-        <div class="table-container shadow-sm">
+        <div class="table-container shadow-sm mb-4">
             <table class="table align-middle">
                 <thead>
                     <tr>
                         <th>اسم المسابقة</th>
-                        <th class="text-center">إجراء</th>
+                        <th class="text-center">إجراءات</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for lesson in lessons %}
-                    <tr>
-                        <td class="fw-bold">{{ lesson.title }}</td>
-                        <td class="text-center">
-                            <a href="{% url 'edit_lesson' lesson.id %}" class="btn btn-sm btn-outline-secondary px-3" style="border-radius: 10px;">
-                                تعديل 📝
-                            </a>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td class="fw-bold">{{ lesson.title }}</td>
+                            <td class="text-center">
+                                <a href="{% url 'edit_lesson' lesson.id %}" class="btn btn-sm btn-outline-secondary px-3 mb-1" style="border-radius: 10px;">تعديل 📝</a>
+                                <form action="{% url 'delete_lesson' lesson.id %}" method="post" class="d-inline" onsubmit="return confirm('يا تاسوني، هل أنتِ متأكدة من حذف هذا الدرس؟ ')">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-delete-small">إزالة 🗑️</button>
+                                </form>
+                            </td>
+                        </tr>
                     {% empty %}
-                    <tr><td colspan="2" class="text-center text-muted">لا يوجد مسابقات حالياً</td></tr>
+                        <tr><td colspan="2" class="text-center text-muted">لا يوجد مسابقات حالياً</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <h4 style="color: var(--primary-rose); font-weight: bold;"> التاسونات</h4>
+        <div class="table-container shadow-sm">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th class="text-center">إجراء</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for staff in all_staff %}
+                        {% if staff.username != 'makarious' %}
+                        <tr>
+                            <td class="fw-bold">تاسوني {{ staff.username }}</td>
+                            <td class="text-center">
+                                <span class="badge-staff">مسؤولة</span>
+                                {% if not staff.is_superuser %}
+                                <form action="{% url 'delete_user' staff.id %}" method="post" class="d-inline" onsubmit="return confirm('حذف حساب الخادمة؟')">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm text-danger border-0 bg-transparent">إزالة</button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
@@ -74,7 +113,7 @@
 
     <div class="col-lg-6">
         <h4 style="color: var(--primary-rose); font-weight: bold;">👥 متابعة تصحيح المقالي</h4>
-        <div class="table-container shadow-sm">
+        <div class="table-container shadow-sm mb-4">
             <table class="table align-middle">
                 <thead>
                     <tr>
@@ -91,9 +130,7 @@
                         <td class="text-center">
                             {% if progress.essay_answers.exists %}
                                 {% if not progress.is_graded %}
-                                    <a href="{% url 'grade_essays' progress.id %}" class="btn btn-sm btn-warning shadow-sm" style="border-radius: 8px; font-size: 0.75rem;">
-                                        صححي المقالي 📝
-                                    </a>
+                                    <a href="{% url 'grade_essays' progress.id %}" class="btn btn-sm btn-warning shadow-sm" style="border-radius: 8px; font-size: 0.75rem;">صححي المقالي 📝</a>
                                 {% else %}
                                     <span class="badge bg-success">تم التصحيح ✅</span>
                                 {% endif %}
@@ -102,36 +139,30 @@
                             {% endif %}
                         </td>
                     </tr>
-                    {% empty %}
-                    <tr><td colspan="3" class="text-center text-muted">لا توجد محاولات حل تحتاج تصحيح حالياً 🌸</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-    </div>
-</div>
 
-<div class="row mt-4">
-    <div class="col-12">
         <h4 style="color: var(--primary-rose); font-weight: bold;">🎀 قائمة كل البنات</h4>
         <div class="table-container shadow-sm">
             <table class="table align-middle">
                 <thead>
                     <tr>
                         <th>الاسم</th>
-                        <th>إجمالي النقاط</th>
+                        <th>النقاط</th>
                         <th class="text-center">إجراء</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for s in all_students %}
                     <tr>
-                        <td>{{ s.username }}</td>
-                        <td><span class="badge-pink">{{ s.total_points|default:0 }} نقطة</span></td>
+                        <td class="fw-bold">{{ s.username }}</td>
+                        <td><span class="badge-pink">{{ s.total_points|default:0 }} ن</span></td>
                         <td class="text-center">
-                            <form action="{% url 'delete_user' s.id %}" method="post" onsubmit="return confirm('متأكدة يا تاسوني إنك عايزة تمسحي حساب البنت دي؟ 🥺')" class="d-inline">
+                            <form action="{% url 'delete_user' s.id %}" method="post" onsubmit="return confirm('متأكدة يا تاسوني إنك عايزة تمسحي حساب البنت دي؟ ')" class="d-inline">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-sm text-danger" style="border: none; background: none;">🗑️ حذف</button>
+                                <button type="submit" class="btn btn-sm text-danger border-0 bg-transparent">🗑️</button>
                             </form>
                         </td>
                     </tr>

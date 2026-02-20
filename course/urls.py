@@ -27,5 +27,6 @@ urlpatterns = [
     # 6. تسجيل الخروج
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 path('dashboard/edit-lesson/<int:lesson_id>/', views.edit_lesson, name='edit_lesson'),
-
+# تأكد من إضافة المسار بالاسم (name) المظبوط
+path('delete-lesson/<int:lesson_id>/', views.delete_lesson, name='delete_lesson'),
 ]
